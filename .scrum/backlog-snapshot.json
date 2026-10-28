@@ -1,13 +1,93 @@
-{"updated_at": "2026-10-28T00:00:00+09:00", "items": [
-  {"id": "#1", "title": "検索ワードから最大再生回数を返す API", "status": "ready", "points": 5, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/1"},
-  {"id": "#2", "title": "API キーが無いときの開発用モック", "status": "ready", "points": 2, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/2"},
-  {"id": "#3", "title": "カウントダウンモード", "status": "ready", "points": 5, "ui": "yes", "url": "https://github.com/kalKun24/view-counter-game/issues/3"},
-  {"id": "#4", "title": "チャージモード", "status": "ready", "points": 2, "ui": "yes", "url": "https://github.com/kalKun24/view-counter-game/issues/4"},
-  {"id": "#5", "title": "ハイ＆ロー対戦", "status": "ready", "points": 3, "ui": "yes", "url": "https://github.com/kalKun24/view-counter-game/issues/5"},
-  {"id": "#6", "title": "検索結果のキャッシュ", "status": "ready", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/6"},
-  {"id": "#7", "title": "連打への対策", "status": "ready", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/7"},
-  {"id": "#10", "title": "クォータ切れの応答（サーバー）", "status": "ready", "points": 2, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/10"},
-  {"id": "#11", "title": "クォータ切れの表示（画面）", "status": "ready", "points": 1, "ui": "yes", "url": "https://github.com/kalKun24/view-counter-game/issues/11"},
-  {"id": "#12", "title": "コンテナ化（静的配信と Dockerfile）", "status": "ready", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/12"},
-  {"id": "#13", "title": "Cloud Run への公開", "status": "ready", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/13"}
-]}
+{
+ "updated_at": "2026-10-28T00:00:00+09:00",
+ "items": [
+  {
+   "id": "#1",
+   "title": "検索ワードから最大再生回数を返す API",
+   "status": "sprint",
+   "points": 5,
+   "ui": "no",
+   "url": "https://github.com/kalKun24/view-counter-game/issues/1"
+  },
+  {
+   "id": "#2",
+   "title": "API キーが無いときの開発用モック",
+   "status": "sprint",
+   "points": 2,
+   "ui": "no",
+   "url": "https://github.com/kalKun24/view-counter-game/issues/2"
+  },
+  {
+   "id": "#3",
+   "title": "カウントダウンモード",
+   "status": "ready",
+   "points": 5,
+   "ui": "yes",
+   "url": "https://github.com/kalKun24/view-counter-game/issues/3"
+  },
+  {
+   "id": "#4",
+   "title": "チャージモード",
+   "status": "ready",
+   "points": 2,
+   "ui": "yes",
+   "url": "https://github.com/kalKun24/view-counter-game/issues/4"
+  },
+  {
+   "id": "#5",
+   "title": "ハイ＆ロー対戦",
+   "status": "ready",
+   "points": 3,
+   "ui": "yes",
+   "url": "https://github.com/kalKun24/view-counter-game/issues/5"
+  },
+  {
+   "id": "#6",
+   "title": "検索結果のキャッシュ",
+   "status": "sprint",
+   "points": 3,
+   "ui": "no",
+   "url": "https://github.com/kalKun24/view-counter-game/issues/6"
+  },
+  {
+   "id": "#7",
+   "title": "連打への対策",
+   "status": "ready",
+   "points": 3,
+   "ui": "no",
+   "url": "https://github.com/kalKun24/view-counter-game/issues/7"
+  },
+  {
+   "id": "#10",
+   "title": "クォータ切れの応答（サーバー）",
+   "status": "ready",
+   "points": 2,
+   "ui": "no",
+   "url": "https://github.com/kalKun24/view-counter-game/issues/10"
+  },
+  {
+   "id": "#11",
+   "title": "クォータ切れの表示（画面）",
+   "status": "ready",
+   "points": 1,
+   "ui": "yes",
+   "url": "https://github.com/kalKun24/view-counter-game/issues/11"
+  },
+  {
+   "id": "#12",
+   "title": "コンテナ化（静的配信と Dockerfile）",
+   "status": "ready",
+   "points": 3,
+   "ui": "no",
+   "url": "https://github.com/kalKun24/view-counter-game/issues/12"
+  },
+  {
+   "id": "#13",
+   "title": "Cloud Run への公開",
+   "status": "ready",
+   "points": 3,
+   "ui": "no",
+   "url": "https://github.com/kalKun24/view-counter-game/issues/13"
+  }
+ ]
+}
