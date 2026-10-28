@@ -4,6 +4,7 @@ import (
 	"context"
 	"hash/fnv"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -21,6 +22,11 @@ const mockIDPrefix = "mock:"
 // "error" (upstream 500), "quota" (403 quotaExceeded), "nomatch" (no result),
 // "slow" (delayed result); in this order of precedence. Any other query gets
 // a deterministic result whose title contains every word of the query.
+//
+// A word of the form "n<digits>" (e.g. "n5000") fixes the view count to that
+// number. It is applied after the special words above, so "n5000 slow" is
+// delayed and then reports 5000. With several such words, the first one in
+// the sorted normalized word set (string order) that fits in int64 is used.
 type MockClient struct {
 	// SlowDelay is the delay for "slow" queries. Tests may shorten it.
 	SlowDelay time.Duration
@@ -65,7 +71,26 @@ func (m *MockClient) GetVideos(_ context.Context, ids []string) ([]Video, error)
 		h := fnv.New64a()
 		_, _ = h.Write([]byte(key))
 		views := 1000 + h.Sum64()%100_000_000
+		if n, ok := fixedViews(strings.Fields(key)); ok {
+			views = n
+		}
 		out = append(out, Video{ID: id, Title: "Mock video: " + key, ViewCount: &views})
 	}
 	return out, nil
+}
+
+// fixedViews returns the view count given by the first "n<digits>" word of
+// ws. ws must be the sorted normalized word set. Words whose digits are not
+// ASCII or overflow int64 are ignored.
+func fixedViews(ws []string) (uint64, bool) {
+	for _, w := range ws {
+		d, ok := strings.CutPrefix(w, "n")
+		if !ok || d == "" || strings.Trim(d, "0123456789") != "" {
+			continue
+		}
+		if n, err := strconv.ParseInt(d, 10, 64); err == nil {
+			return uint64(n), true
+		}
+	}
+	return 0, false
 }
