@@ -73,6 +73,39 @@ func foundClient() *countingClient {
 	}
 }
 
+// panicClient panics on the first search, then behaves like foundClient.
+type panicClient struct {
+	*countingClient
+	panicked atomic.Bool
+}
+
+func (p *panicClient) SearchVideoIDs(ctx context.Context, q string) ([]string, error) {
+	if p.panicked.CompareAndSwap(false, true) {
+		panic("loader exploded")
+	}
+	return p.countingClient.SearchVideoIDs(ctx, q)
+}
+
+func TestPanicInLoadReturns500DistinctFromUpstreamAndRecovers(t *testing.T) {
+	c := &panicClient{countingClient: foundClient()}
+	h, logs, _ := newCachedHandler(c, time.Now, time.Hour, 10)
+
+	rec := get(h, "cat piano")
+	if rec.Code != http.StatusInternalServerError || !strings.Contains(rec.Body.String(), `"internal_error"`) {
+		t.Fatalf("got %d %s, want 500 internal_error", rec.Code, rec.Body.String())
+	}
+	out := logs.String()
+	if !strings.Contains(out, "cache load panicked") || !strings.Contains(out, "loader exploded") || strings.Contains(out, "youtube request failed") {
+		t.Fatalf("log not distinguishable: %s", out)
+	}
+
+	// Same key again: reloaded, not served from a cached failure.
+	rec = get(h, "cat piano")
+	if rec.Code != http.StatusOK {
+		t.Fatalf("retry got %d %s, want 200", rec.Code, rec.Body.String())
+	}
+}
+
 func TestCacheHitSkipsUpstreamAndLogs(t *testing.T) {
 	c := foundClient()
 	now := time.Now()
