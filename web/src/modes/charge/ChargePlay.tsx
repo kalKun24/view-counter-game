@@ -68,7 +68,7 @@ export function ChargePlay({ title, level, target, onFinish, onQuit }: Props) {
         focusHeading={false}
       />
       <ChargeCounter target={target} level={level} total={total} left={left} />
-      <SearchForm isUsed={isUsed} onResult={onResult} />
+      <SearchForm isUsed={isUsed} onResult={onResult} onHome={onQuit} />
       <p className="sr-only" role="status">
         {announce}
       </p>

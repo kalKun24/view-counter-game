@@ -140,7 +140,7 @@ export function VersusPlay({ title, names, dir, topic, onFinish, onQuit }: Props
           onGo={() => setAcked(moves.length)}
         />
       ) : (
-        <SearchForm key={moves.length} isUsed={isUsed} onResult={onResult} />
+        <SearchForm key={moves.length} isUsed={isUsed} onResult={onResult} onHome={onQuit} />
       )}
       <WordLog rows={logRowsOf(moves, names)} sign="" />
     </div>

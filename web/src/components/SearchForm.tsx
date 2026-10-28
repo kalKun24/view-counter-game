@@ -1,15 +1,18 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useViewsFetch, type FetchOutcome } from "../hooks/useViewsFetch";
 import { FetchStatus } from "./FetchStatus";
+import { QuotaNotice } from "./QuotaNotice";
 
 interface Props {
   /** 正規化キー（normKey）が使用済みか */
   isUsed: (key: string) => boolean;
   /** found / nomatch だけを受ける。通信失敗と q 不正はここで処理する。 */
   onResult: (outcome: FetchOutcome) => void;
+  /** クォータ切れの「ホームへ戻る」。各モードの「やめる」と同じ処理を渡す。 */
+  onHome: () => void;
 }
 
-export function SearchForm({ isUsed, onResult }: Props) {
+export function SearchForm({ isUsed, onResult, onHome }: Props) {
   const [value, setValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const { state, submit, retry, dismiss } = useViewsFetch({
@@ -45,6 +48,8 @@ export function SearchForm({ isUsed, onResult }: Props) {
     inputRef.current?.focus();
     retry();
   };
+
+  if (state.kind === "quota") return <QuotaNotice onHome={onHome} />;
 
   return (
     <section className="panel">
