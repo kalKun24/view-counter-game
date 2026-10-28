@@ -45,12 +45,12 @@ function setup() {
 }
 
 describe("ホーム", () => {
-  it("3モードを出し、カウントダウンだけが有効。準備中は aria-disabled で何も起きない", async () => {
+  it("3モードを出し、チャージだけが準備中。準備中は aria-disabled で何も起きない", async () => {
     const user = setup();
     expect(tid("home-title")).toHaveTextContent("再生回数カウンター");
     expect(screen.getByRole("heading", { level: 1 })).toBe(tid("home-title"));
     expect(tid("mode-countdown")).not.toHaveAttribute("aria-disabled");
-    for (const id of ["mode-charge", "mode-versus"]) {
+    for (const id of ["mode-charge"]) {
       const b = tid(id);
       expect(b).toHaveAttribute("aria-disabled", "true");
       expect(b).not.toBeDisabled();

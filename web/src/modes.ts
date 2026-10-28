@@ -36,7 +36,7 @@ export const MODES: ModeInfo[] = [
 export const enabledModes: Record<ModeId, boolean> = {
   countdown: true,
   charge: false,
-  versus: false,
+  versus: true,
 };
 
 export const modeTitle = (id: ModeId): string => MODES.find((m) => m.id === id)?.title ?? "";
