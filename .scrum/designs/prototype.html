@@ -1,0 +1,339 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>再生回数カウンター</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;700&family=Azeret+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one narrow column like a handheld scoreboard; the big counter is the hero, controls stack under it */
+:root{
+  --bg:#eef0f6; --panel:#ffffff; --ink:#1c2140; --muted:#5d6386; --line:#d5d9e8;
+  --accent:#e2671b; --accent-ink:#ffffff; --counter-bg:#1c2140; --counter-fg:#ffb347;
+  --good:#1f8a5b; --bad:#c8323c;
+  --display:"Dela Gothic One","Hiragino Sans","Yu Gothic",sans-serif;
+  --body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  --mono:"Azeret Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12152a; --panel:#1b1f3a; --ink:#e8eaf6; --muted:#a2a7c9; --line:#2f3560;
+  --accent:#ff8a3d; --accent-ink:#1a1206; --counter-bg:#080a18; --counter-fg:#ffb347;
+  --good:#45c98a; --bad:#ff6b73; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12152a; --panel:#1b1f3a; --ink:#e8eaf6; --muted:#a2a7c9; --line:#2f3560;
+  --accent:#ff8a3d; --accent-ink:#1a1206; --counter-bg:#080a18; --counter-fg:#ffb347;
+  --good:#45c98a; --bad:#ff6b73; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1{font-family:var(--display);font-weight:400;font-size:1.9rem;line-height:1.2;margin:0;text-wrap:balance}
+h2{font-family:var(--display);font-weight:400;font-size:1.15rem;margin:0}
+.eyebrow{font-size:.75rem;letter-spacing:.12em;color:var(--muted);font-weight:700}
+p{margin:0}
+.muted{color:var(--muted)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.modes{display:grid;gap:10px}
+.mode{all:unset;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.mode:hover,.mode:focus-visible{border-color:var(--accent)}
+.mode:focus-visible,button:focus-visible,input:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.mode .tag{font-size:.72rem;font-weight:700;letter-spacing:.08em;color:var(--accent)}
+.mode b{font-family:var(--display);font-weight:400;font-size:1.1rem}
+.counter{background:var(--counter-bg);border-radius:14px;padding:16px;color:var(--counter-fg);display:flex;flex-direction:column;gap:4px}
+.counter .label{font-size:.75rem;letter-spacing:.12em;color:#c9cbe0;font-weight:700}
+.counter .num{font-family:var(--mono);font-weight:700;font-size:clamp(1.6rem,8vw,2.6rem);font-variant-numeric:tabular-nums;line-height:1.1;overflow-wrap:anywhere}
+.counter .jp{font-size:.95rem;color:#e7e8f3}
+.bar{height:8px;border-radius:4px;background:rgba(255,255,255,.15);overflow:hidden;position:relative}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--counter-fg);transition:width .4s}
+.bar u{position:absolute;top:-3px;bottom:-3px;width:2px;background:#ff6b73}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-size:.8rem;border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-variant-numeric:tabular-nums}
+label{font-size:.85rem;font-weight:700}
+input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row>*{flex:1 1 140px;min-width:0}
+.btn{font:inherit;font-weight:700;border:0;border-radius:10px;padding:11px 16px;cursor:pointer;background:var(--accent);color:var(--accent-ink);text-align:center;text-decoration:none;display:inline-block}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn[aria-disabled="true"],.btn:disabled{opacity:.45;pointer-events:none}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{flex:1;font:inherit;border:0;background:transparent;color:var(--ink);padding:9px 6px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg);font-weight:700}
+.preview{font-family:var(--mono);font-size:.85rem;color:var(--muted);min-height:1.4em}
+.msg{font-weight:700;min-height:1.4em}
+.msg.bad{color:var(--bad)} .msg.good{color:var(--good)}
+.log{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.log li{display:grid;grid-template-columns:2.2em 1fr auto;gap:8px;padding:8px 0;border-top:1px solid var(--line);align-items:baseline}
+.log li:first-child{border-top:0}
+.log .t{font-family:var(--mono);color:var(--muted);font-size:.8rem}
+.log .w{min-width:0;overflow-wrap:anywhere}
+.log .v{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+.result{font-family:var(--display);font-weight:400;font-size:1.6rem;text-align:center}
+.players{display:flex;flex-direction:column;gap:8px}
+.players .row input{flex:1 1 auto}
+.players .row button{flex:0 0 auto}
+.rules{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px;font-size:.9rem}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.small{font-size:.8rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap" id="app"></div>
+
+<script>
+(function(){
+const $ = s => document.querySelector(s);
+const app = $("#app");
+const esc = s => String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------- 数字の読み書き ---------- */
+function parseViews(raw){
+  if(raw==null) return NaN;
+  let s = String(raw).replace(/[,，\s]/g,"").replace(/回視聴|回|視聴|views?/gi,"")
+    .replace(/[０-９．]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0));
+  if(!s) return NaN;
+  if(/[億万]/.test(s)){
+    let total=0, rest=s;
+    const oku = rest.match(/^([\d.]+)億/); if(oku){ total += parseFloat(oku[1])*1e8; rest = rest.slice(oku[0].length); }
+    const man = rest.match(/^([\d.]+)万/); if(man){ total += parseFloat(man[1])*1e4; rest = rest.slice(man[0].length); }
+    if(rest){ if(!/^\d+$/.test(rest)) return NaN; total += parseInt(rest,10); }
+    return Math.round(total);
+  }
+  const m = s.match(/^([\d.]+)([kmb])$/i);
+  if(m){ return Math.round(parseFloat(m[1])*{k:1e3,m:1e6,b:1e9}[m[2].toLowerCase()]); }
+  if(/^\d+$/.test(s)) return parseInt(s,10);
+  return NaN;
+}
+function jp(n){
+  const neg = n<0; n = Math.abs(Math.round(n));
+  const oku = Math.floor(n/1e8), man = Math.floor((n%1e8)/1e4), one = n%1e4;
+  let out = "";
+  if(oku) out += oku+"億";
+  if(man) out += man+"万";
+  if(one || !out) out += one;
+  return (neg?"−":"")+out;
+}
+const comma = n => (n<0?"−":"")+Math.abs(Math.round(n)).toLocaleString("ja-JP");
+const rand = (a,b) => Math.floor(a + Math.random()*(b-a));
+const normWords = q => q.trim().toLowerCase().split(/[\s　]+/).filter(Boolean).sort().join(" ");
+const ytLink = q => "https://www.youtube.com/results?search_query="+encodeURIComponent(q.trim());
+
+/* ---------- 難易度 ---------- */
+const LEVELS = {
+  easy:  {name:"やさしい", turns:6, min:1e8,  max:3e8,  tol:0.05},
+  normal:{name:"ふつう",   turns:5, min:3e8,  max:1e9,  tol:0.02},
+  hard:  {name:"むずかしい",turns:4, min:1e9,  max:5e9,  tol:0.005},
+};
+
+let S = {screen:"home", level:"normal", dir:"higher", players:["プレイヤー1","プレイヤー2"]};
+try{ const saved = JSON.parse(localStorage.getItem("vc-prefs")||"{}"); Object.assign(S, saved, {screen:"home"}); }catch(e){}
+function savePrefs(){ try{ localStorage.setItem("vc-prefs", JSON.stringify({level:S.level,dir:S.dir,players:S.players})); }catch(e){} }
+
+/* ---------- 画面 ---------- */
+function render(){
+  savePrefs();
+  ({home,setupSolo,setupVs,play,end})[S.screen]();
+}
+
+function home(){
+  app.innerHTML = `
+  <header style="display:flex;flex-direction:column;gap:6px">
+    <span class="eyebrow">YOUTUBE 再生回数ゲーム</span>
+    <h1>再生回数カウンター</h1>
+    <p class="muted">YouTubeで言葉を検索して、タイトルに検索ワードが全部入っている動画のうち一番再生されている動画の回数を使います。</p>
+  </header>
+  <div class="counter" aria-label="例">
+    <span class="label">例：お題の数字</span>
+    <span class="num">487,215,330</span>
+    <span class="jp">4億8721万5330 回 ／ 残り5ターン</span>
+  </div>
+  <div class="modes">
+    <button class="mode" data-m="countdown"><span class="tag">ソロ・減らす</span><b>カウントダウン</b><span class="muted small">お題の数字から再生回数を引いていく。0を割ったらアウト。0にどこまで近づけるか。</span></button>
+    <button class="mode" data-m="charge"><span class="tag">ソロ・増やす</span><b>チャージ</b><span class="muted small">0から再生回数を足していき、ターン内に目標ラインへ。上限を超えたらバースト。</span></button>
+    <button class="mode" data-m="versus"><span class="tag">みんなで・スマホを回す</span><b>ハイ＆ロー対戦</b><span class="muted small">順番に検索。前の人より高い（または低い）数字を出せなかった人の負け。</span></button>
+  </div>
+  <section class="panel">
+    <h2>共通ルール</h2>
+    <ol class="rules">
+      <li>検索ワードを入れて「YouTubeで探す」を押す（別タブで開きます）。</li>
+      <li>タイトルに検索ワードが<b>全部</b>入っている動画の中で、一番再生回数が多いものを探す。</li>
+      <li>その再生回数を入力。「1.2億」「350万」「1,234,567」どれでもOK。</li>
+      <li>同じワードの組み合わせは2回使えません。</li>
+    </ol>
+  </section>`;
+  app.querySelectorAll(".mode").forEach(b=>b.onclick=()=>{
+    S.mode=b.dataset.m; S.screen = S.mode==="versus" ? "setupVs" : "setupSolo"; render();
+  });
+}
+
+function seg(name, opts, cur){
+  return `<div class="seg" role="group" aria-label="${name}">${opts.map(([v,l])=>`<button type="button" data-v="${v}" aria-pressed="${v===cur}">${l}</button>`).join("")}</div>`;
+}
+
+function setupSolo(){
+  const L = LEVELS[S.level];
+  const isC = S.mode==="countdown";
+  app.innerHTML = `
+  <div class="top"><button class="btn ghost" id="back">← 戻る</button><span class="eyebrow">${isC?"カウントダウン":"チャージ"}</span></div>
+  <section class="panel">
+    <h2>難易度</h2>
+    ${seg("難易度",[["easy","やさしい"],["normal","ふつう"],["hard","むずかしい"]],S.level)}
+    <ul class="rules">
+      <li>お題：${jp(L.min)} 〜 ${jp(L.max)} 回のあいだでランダム</li>
+      <li>ターン数：${L.turns}</li>
+      ${isC ? `<li>クリア条件：残りがお題の ${L.tol*100}% 以下（0未満はアウト）</li>`
+            : `<li>クリア条件：目標以上、かつ目標の ${100+L.tol*100}% 以下（超えたらバースト）</li>`}
+    </ul>
+    <button class="btn" id="go">お題を引く</button>
+  </section>`;
+  $("#back").onclick=()=>{S.screen="home";render();};
+  app.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{S.level=b.dataset.v;render();});
+  $("#go").onclick=()=>{
+    const target = rand(L.min, L.max);
+    S.game = {target, turnsMax:L.turns, tol:L.tol, value: isC?target:0, log:[], used:new Set()};
+    S.screen="play"; render();
+  };
+}
+
+function setupVs(){
+  app.innerHTML = `
+  <div class="top"><button class="btn ghost" id="back">← 戻る</button><span class="eyebrow">ハイ＆ロー対戦</span></div>
+  <section class="panel">
+    <h2>勝ち負けの向き</h2>
+    ${seg("向き",[["higher","前より高く"],["lower","前より低く"]],S.dir)}
+    <p class="muted small">${S.dir==="higher"?"前の人より低い数字を出したら負け。":"前の人より高い数字を出したら負け。最初の人はお題の数字より低く。"}</p>
+  </section>
+  <section class="panel">
+    <h2>プレイヤー（2〜8人）</h2>
+    <div class="players">${S.players.map((p,i)=>`
+      <div class="row"><input id="p${i}" value="${esc(p)}" aria-label="プレイヤー${i+1}の名前" maxlength="16">
+      ${S.players.length>2?`<button class="btn ghost" data-del="${i}" aria-label="削除">×</button>`:""}</div>`).join("")}
+    </div>
+    <div class="row">
+      <button class="btn ghost" id="add" ${S.players.length>=8?"disabled":""}>＋ 追加</button>
+      <button class="btn" id="go">スタート</button>
+    </div>
+  </section>`;
+  const sync=()=>{S.players=S.players.map((p,i)=>($("#p"+i).value.trim()||`プレイヤー${i+1}`));};
+  $("#back").onclick=()=>{sync();S.screen="home";render();};
+  app.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{sync();S.dir=b.dataset.v;render();});
+  app.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{sync();S.players.splice(+b.dataset.del,1);render();});
+  $("#add").onclick=()=>{sync();S.players.push(`プレイヤー${S.players.length+1}`);render();};
+  $("#go").onclick=()=>{
+    sync();
+    const start = S.dir==="lower" ? rand(5e8,3e9) : null;
+    S.game = {value:start, turn:0, log:[], used:new Set()};
+    S.screen="play"; render();
+  };
+}
+
+function counterHTML(){
+  const g=S.game;
+  if(S.mode==="versus"){
+    const who = S.players[g.turn % S.players.length];
+    const lbl = g.value==null ? "最初の1手（なんでもOK）" : (S.dir==="higher"?"この数字より高く":"この数字より低く");
+    return `<div class="counter"><span class="label">${esc(who)} の番 ・ ${lbl}</span>
+      <span class="num">${g.value==null?"—":comma(g.value)}</span>
+      <span class="jp">${g.value==null?"好きなワードで検索してスタート":jp(g.value)+" 回"}</span></div>`;
+  }
+  const left = g.turnsMax - g.log.length;
+  if(S.mode==="countdown"){
+    const pct = Math.max(0, g.value/g.target*100);
+    return `<div class="counter"><span class="label">のこり ・ お題 ${jp(g.target)}</span>
+      <span class="num">${comma(g.value)}</span>
+      <span class="jp">${jp(g.value)} 回 ／ 残り${left}ターン</span>
+      <div class="bar" aria-hidden="true"><i style="width:${pct}%"></i><u style="left:${g.tol*100}%"></u></div></div>`;
+  }
+  const cap = g.target*(1+g.tol), pct = Math.min(100, g.value/cap*100);
+  return `<div class="counter"><span class="label">合計 ・ 目標 ${jp(g.target)} 〜 上限 ${jp(cap)}</span>
+    <span class="num">${comma(g.value)}</span>
+    <span class="jp">あと ${jp(Math.max(0,g.target-g.value))} 回 ／ 残り${left}ターン</span>
+    <div class="bar" aria-hidden="true"><i style="width:${pct}%"></i><u style="left:${g.target/cap*100}%"></u></div></div>`;
+}
+
+function logHTML(){
+  const g=S.game; if(!g.log.length) return "";
+  return `<section class="panel"><h2>履歴</h2><ul class="log">${g.log.map((e,i)=>`
+    <li><span class="t">${String(i+1).padStart(2,"0")}</span><span class="w">${e.who?`<b>${esc(e.who)}</b>：`:""}${esc(e.q)}</span><span class="v">${S.mode==="countdown"?"−":S.mode==="charge"?"+":""}${jp(e.v)}</span></li>`).join("")}</ul></section>`;
+}
+
+function play(){
+  app.innerHTML = `
+  <div class="top"><button class="btn ghost" id="quit">やめる</button><span class="eyebrow">${{countdown:"カウントダウン",charge:"チャージ",versus:"ハイ＆ロー対戦"}[S.mode]}</span></div>
+  ${counterHTML()}
+  <section class="panel">
+    <div style="display:flex;flex-direction:column;gap:6px"><label for="q">検索ワード（スペース区切りで複数可）</label>
+      <input id="q" placeholder="例：猫 ピアノ" autocomplete="off"></div>
+    <a class="btn ghost" id="yt" href="#" target="_blank" rel="noopener" aria-disabled="true">YouTubeで探す ↗</a>
+    <div style="display:flex;flex-direction:column;gap:6px"><label for="v">一番再生されている動画の再生回数</label>
+      <input id="v" inputmode="decimal" placeholder="例：1.2億 / 350万 / 1234567" autocomplete="off">
+      <span class="preview" id="pv"></span></div>
+    <button class="btn" id="ok" disabled>この数字で決定</button>
+    <p class="msg" id="msg" role="status"></p>
+  </section>
+  ${logHTML()}`;
+  const q=$("#q"), v=$("#v"), yt=$("#yt"), ok=$("#ok"), pv=$("#pv"), msg=$("#msg");
+  const upd=()=>{
+    const has=q.value.trim().length>0, n=parseViews(v.value);
+    yt.href = has?ytLink(q.value):"#"; yt.setAttribute("aria-disabled", has?"false":"true");
+    pv.textContent = v.value ? (isNaN(n)?"読み取れません":`= ${comma(n)} 回（${jp(n)}）`) : "";
+    ok.disabled = !(has && !isNaN(n) && n>=0);
+  };
+  q.oninput=upd; v.oninput=upd; upd();
+  $("#quit").onclick=()=>{S.screen="home";render();};
+  ok.onclick=()=>{
+    const g=S.game, key=normWords(q.value), n=parseViews(v.value);
+    if(g.used.has(key)){ msg.className="msg bad"; msg.textContent="そのワードの組み合わせはもう使われています。"; return; }
+    g.used.add(key);
+    if(S.mode==="versus") return stepVs(q.value.trim(), n);
+    g.log.push({q:q.value.trim(), v:n});
+    if(S.mode==="countdown"){
+      g.value -= n;
+      if(g.value<0) return finish(false,"0を割ってしまった！");
+      if(g.value<=g.target*g.tol) return finish(true,"ゴール圏に到達！");
+    }else{
+      g.value += n;
+      if(g.value>g.target*(1+g.tol)) return finish(false,"上限を超えてバースト！");
+      if(g.value>=g.target) return finish(true,"目標ラインに到達！");
+    }
+    if(g.log.length>=g.turnsMax) return finish(false,"ターン切れ。");
+    render(); $("#q").focus();
+  };
+}
+
+function stepVs(word, n){
+  const g=S.game, who=S.players[g.turn % S.players.length];
+  const prev=g.value;
+  g.log.push({q:word, v:n, who});
+  const lose = prev!=null && (S.dir==="higher" ? n<=prev : n>=prev);
+  if(lose){
+    S.game.loser=who;
+    return finish(false, `${who} の負け！（${jp(n)} は ${jp(prev)} より${S.dir==="higher"?"高くない":"低くない"}）`);
+  }
+  g.value=n; g.turn++; render(); $("#q").focus();
+}
+
+function finish(win, reason){ S.game.win=win; S.game.reason=reason; S.screen="end"; render(); }
+
+function end(){
+  const g=S.game;
+  let detail="";
+  if(S.mode==="countdown") detail = `残り ${comma(g.value)} 回（お題の ${(g.value/g.target*100).toFixed(2)}%）・${g.log.length}ターン`;
+  else if(S.mode==="charge") detail = `合計 ${comma(g.value)} 回（目標の ${(g.value/g.target*100).toFixed(1)}%）・${g.log.length}ターン`;
+  else detail = `${g.log.length}手つづきました`;
+  app.innerHTML = `
+  <div class="counter">
+    <span class="label">${S.mode==="versus"?"決着":"結果"}</span>
+    <span class="num" style="color:${S.mode==="versus"?"var(--counter-fg)":(g.win?"#45c98a":"#ff6b73")}">${S.mode==="versus"?"GAME SET":(g.win?"CLEAR":"GAME OVER")}</span>
+    <span class="jp">${esc(g.reason)}</span>
+  </div>
+  <p class="muted" style="text-align:center">${detail}</p>
+  <div class="row"><button class="btn" id="again">もう一回</button><button class="btn ghost" id="home">モード選択へ</button></div>
+  ${logHTML()}`;
+  $("#again").onclick=()=>{S.screen= S.mode==="versus"?"setupVs":"setupSolo"; render();};
+  $("#home").onclick=()=>{S.screen="home";render();};
+}
+
+render();
+})();
+</script>
+
+</body></html>
