@@ -39,7 +39,7 @@ make vuln        # Docker 内で govulncheck を実行し、結果を表示す�
 
 - `make test-race` は、全パッケージが通れば各行が `ok` になる。失敗があれば非 0 で終了する。
 - `make vuln` は、脆弱性が無ければ `No vulnerabilities found.` を表示する。検出があれば一覧を表示して非 0 で終了する。
-- Docker のイメージ（`golang:1.26.9-bookworm`）と `govulncheck` のバージョン（`v1.9.0`）は `server/Makefile` で固定している。上げるときは Makefile の2行を変える。
+- Docker のイメージ（`golang:1.26.10-bookworm`）と `govulncheck` のバージョン（`v1.9.0`）は `server/Makefile` で固定している。上げるときは Makefile の2行を変える。
 - 初回はイメージと依存の取得のため、ネットワークと時間が要る。ソースは読み取り専用でマウントするため、リポジトリのファイルは変わらない。
 
 ## キャッシュ
