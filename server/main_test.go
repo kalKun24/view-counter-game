@@ -53,6 +53,11 @@ func TestNewClient(t *testing.T) {
 		{"mock and key conflict", map[string]string{"USE_MOCK": "1", "YOUTUBE_API_KEY": "k"}, false, true},
 		{"key only", map[string]string{"YOUTUBE_API_KEY": "k"}, false, false},
 		{"neither", map[string]string{}, false, true},
+		{"USE_MOCK true with key", map[string]string{"USE_MOCK": "true", "YOUTUBE_API_KEY": "k"}, false, true},
+		{"USE_MOCK true only", map[string]string{"USE_MOCK": "true"}, false, true},
+		{"USE_MOCK yes with key", map[string]string{"USE_MOCK": "yes", "YOUTUBE_API_KEY": "k"}, false, true},
+		{"USE_MOCK 0 with key", map[string]string{"USE_MOCK": "0", "YOUTUBE_API_KEY": "k"}, false, false},
+		{"USE_MOCK empty with key", map[string]string{"USE_MOCK": "", "YOUTUBE_API_KEY": "k"}, false, false},
 		{"USE_MOCK other value", map[string]string{"USE_MOCK": "0"}, false, true},
 	}
 	for _, tt := range tests {
@@ -116,5 +121,13 @@ func TestMainStartup(t *testing.T) {
 	}
 	if !strings.Contains(s, "USE_MOCK") || !strings.Contains(s, "YOUTUBE_API_KEY") {
 		t.Errorf("output lacks variable names: %s", s)
+	}
+}
+
+func TestNewClientInvalidMockNoKeyLeak(t *testing.T) {
+	const secret = "dummy-secret-value"
+	_, err := newClient(env(map[string]string{"USE_MOCK": "true", "YOUTUBE_API_KEY": secret}), slog.New(slog.NewTextHandler(&bytes.Buffer{}, nil)))
+	if err == nil || !strings.Contains(err.Error(), "USE_MOCK") || !strings.Contains(err.Error(), "true") || strings.Contains(err.Error(), secret) {
+		t.Fatalf("unexpected: %v", err)
 	}
 }
