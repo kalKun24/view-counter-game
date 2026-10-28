@@ -4,11 +4,13 @@ import { Home } from "./components/Home";
 import { enabledModes, type ModeId } from "./modes";
 import { ChargeMode } from "./modes/charge/ChargeMode";
 import { CountdownMode } from "./modes/countdown/CountdownMode";
+import { VersusMode } from "./modes/versus/VersusMode";
 
 /** モードごとの画面。#4・#5 は自分の画面をここに足し、modes.ts の enabledModes を true にする。 */
 const modeScreens: Partial<Record<ModeId, ComponentType<{ onExit: () => void }>>> = {
   countdown: CountdownMode,
   charge: ChargeMode,
+  versus: VersusMode,
 };
 
 export default function App() {

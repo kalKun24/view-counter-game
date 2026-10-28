@@ -9,6 +9,8 @@ export interface LogRow {
   title: string;
   /** ハイ＆ロー対戦のプレイヤー名 */
   who?: string;
+  /** ハイ＆ロー対戦で、その手で脱落したとき */
+  out?: boolean;
 }
 
 interface Props {
@@ -31,6 +33,11 @@ export function WordLog({ rows, sign }: Props) {
               <span className="word" data-testid="log-word">
                 {r.who ? <b>{r.who}：</b> : null}
                 {r.query}
+                {r.out ? (
+                  <span className="out" data-testid="vs-log-out">
+                    脱落
+                  </span>
+                ) : null}
               </span>
               <span className="title" data-testid="log-title">
                 {r.title}

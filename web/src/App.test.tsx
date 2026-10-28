@@ -45,22 +45,17 @@ function setup() {
 }
 
 describe("ホーム", () => {
-  it("3モードを出し、カウントダウンとチャージが有効。準備中は aria-disabled で何も起きない", async () => {
-    const user = setup();
+  it("3モードとも有効で、準備中のモードは無い", () => {
+    setup();
     expect(tid("home-title")).toHaveTextContent("再生回数カウンター");
     expect(screen.getByRole("heading", { level: 1 })).toBe(tid("home-title"));
-    expect(tid("mode-countdown")).not.toHaveAttribute("aria-disabled");
-    for (const id of ["mode-versus"]) {
+    for (const id of ["mode-countdown", "mode-charge", "mode-versus"]) {
       const b = tid(id);
-      expect(b).toHaveAttribute("aria-disabled", "true");
+      expect(b).not.toHaveAttribute("aria-disabled");
       expect(b).not.toBeDisabled();
-      expect(b).toHaveTextContent("準備中");
-      await user.click(b);
-      b.focus();
-      await user.keyboard("{Enter}");
-      await user.keyboard(" ");
+      expect(b).not.toHaveTextContent("準備中");
     }
-    expect(tid("home-title")).toBeInTheDocument();
+    expect(screen.queryByText("準備中")).toBeNull();
   });
 
   it("共通ルールは手入力・YouTube リンクを含まず、切り捨てを説明する", () => {
