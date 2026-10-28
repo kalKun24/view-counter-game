@@ -4,6 +4,8 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"strings"
@@ -117,6 +119,14 @@ func NewHandler(c youtube.Client, log *slog.Logger, opts ...Option) http.Handler
 		defer cancel()
 		res, err := lookup(ctx, q)
 		if err != nil {
+			var pe *cache.PanicError
+			if errors.As(err, &pe) {
+				// A bug in the load, not an upstream failure: log it distinctly
+				// (with the stack) and answer 500 instead of 502.
+				log.Error("cache load panicked", "panic", fmt.Sprint(pe.Value), "stack", string(pe.Stack))
+				writeError(w, http.StatusInternalServerError, "internal_error", "サーバ内部でエラーが発生しました。")
+				return
+			}
 			// youtube errors are sanitized and never contain the API key.
 			log.Error("youtube request failed", "err", err.Error())
 			writeError(w, http.StatusBadGateway, "upstream_error", "動画情報の取得に失敗しました。")
