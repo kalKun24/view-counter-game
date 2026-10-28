@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/kalKun24/view-counter-game/server/internal/cache"
 	"github.com/kalKun24/view-counter-game/server/internal/words"
 	"github.com/kalKun24/view-counter-game/server/internal/youtube"
 )
@@ -67,8 +68,44 @@ type errorBody struct {
 	} `json:"error"`
 }
 
+// Option configures NewHandler.
+type Option func(*handlerConfig)
+
+type handlerConfig struct {
+	cache *cache.Cache[Result]
+}
+
+// WithCache makes the handler cache successful lookups (including "not
+// found") keyed by words.Key. Upstream errors are never cached.
+func WithCache(c *cache.Cache[Result]) Option {
+	return func(h *handlerConfig) { h.cache = c }
+}
+
 // NewHandler returns the router for the API.
-func NewHandler(c youtube.Client, log *slog.Logger) http.Handler {
+func NewHandler(c youtube.Client, log *slog.Logger, opts ...Option) http.Handler {
+	var cfg handlerConfig
+	for _, o := range opts {
+		o(&cfg)
+	}
+	lookup := func(ctx context.Context, q string) (Result, error) {
+		if cfg.cache == nil {
+			return MaxViews(ctx, c, q)
+		}
+		key := words.Key(q)
+		res, hit, err := cfg.cache.Do(ctx, key, func(ctx context.Context) (Result, error) {
+			// The load is shared by every request waiting on this key, so it
+			// gets its own timeout rather than one request's deadline.
+			ctx, cancel := context.WithTimeout(ctx, requestTimeout)
+			defer cancel()
+			return MaxViews(ctx, c, q)
+		})
+		if hit {
+			log.Info("cache hit", "key", key)
+		} else {
+			log.Info("cache miss", "key", key)
+		}
+		return res, err
+	}
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/views", func(w http.ResponseWriter, r *http.Request) {
 		q := r.URL.Query().Get("q")
@@ -78,7 +115,7 @@ func NewHandler(c youtube.Client, log *slog.Logger) http.Handler {
 		}
 		ctx, cancel := context.WithTimeout(r.Context(), requestTimeout)
 		defer cancel()
-		res, err := MaxViews(ctx, c, q)
+		res, err := lookup(ctx, q)
 		if err != nil {
 			// youtube errors are sanitized and never contain the API key.
 			log.Error("youtube request failed", "err", err.Error())
