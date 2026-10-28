@@ -1,10 +1,10 @@
 {
- "updated_at": "2026-10-28T00:00:00+09:00",
+ "updated_at": "2026-10-28T15:08:03+09:00",
  "items": [
   {
    "id": "#1",
    "title": "検索ワードから最大再生回数を返す API",
-   "status": "sprint",
+   "status": "done",
    "points": 5,
    "ui": "no",
    "url": "https://github.com/kalKun24/view-counter-game/issues/1"
@@ -12,7 +12,7 @@
   {
    "id": "#2",
    "title": "API キーが無いときの開発用モック",
-   "status": "sprint",
+   "status": "done",
    "points": 2,
    "ui": "no",
    "url": "https://github.com/kalKun24/view-counter-game/issues/2"
@@ -44,7 +44,7 @@
   {
    "id": "#6",
    "title": "検索結果のキャッシュ",
-   "status": "sprint",
+   "status": "done",
    "points": 3,
    "ui": "no",
    "url": "https://github.com/kalKun24/view-counter-game/issues/6"

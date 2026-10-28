@@ -1,5 +1,5 @@
 # Sprint 1
-- phase: review
+- phase: retrospective
 - goal: PO が API キー無しでサーバーを起動し、検索ワードを送ると、タイトルにすべてのワードを含む動画の最大再生回数と動画タイトルが返ること、該当なしの場合とキャッシュの効き目を、curl で確かめられる。
 - started: 2026-10-28T14:48:20+09:00
 - base_branch: main
@@ -7,9 +7,9 @@
 ## 対象 PBI
 | PBI | points | ui | 担当構成 | 状態 | 差し戻し | ブランチ | 作業ディレクトリ |
 |---|---|---|---|---|---|---|---|
-| #1 | 5 | no | golang-pro | approved | 0 | scrum/1 | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-aea5cb77838bac46b |
-| #2 | 2 | no | golang-pro | approved | 0 | scrum/2 | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-aad09736523666a2c |
-| #6 | 3 | no | golang-pro | approved | 0 | scrum/6 | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-aefac24eabe2aab27 |
+| #1 | 5 | no | golang-pro | accepted | 0 | scrum/1 | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-aea5cb77838bac46b |
+| #2 | 2 | no | golang-pro | accepted | 0 | scrum/2 | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-aad09736523666a2c |
+| #6 | 3 | no | golang-pro | accepted | 0 | scrum/6 | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-aefac24eabe2aab27 |
 
 ## デモ台本
 | # | PO の操作 | 期待する結果 | PBI |
@@ -133,3 +133,13 @@
 - 作業ディレクトリ：/home/kal24hi/Projects/view-counter-game/.claude/worktrees/sprint-1
 - デモの場所：/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-1/（README.md、demo.sh、rehearsal.md）
 - リハーサル：1回目で全場面一致（9場面＋補足）。
+
+### review
+- PO がデモを受け入れた。PR #14 で `scrum/sprint-1` を `main` にマージした（`--merge --delete-branch`）。
+- マージ後の `main` で `go test -count=1 ./...`：5パッケージ、トップレベルのテスト 35件がすべて pass。
+- #1・#2・#6 は PR の `Closes` でクローズ（done）。PBI と統合ブランチの worktree・ブランチは削除した。
+
+## デモの判定
+| 回 | 日時 | 判定 | PO の指摘 | 原因の PBI | 対応 |
+|---|---|---|---|---|---|
+| 1 | 2026-10-28T15:08:03+09:00 | 受け入れ | — | — | マージした |
