@@ -32,6 +32,8 @@ interface SetupProps {
   onLevelChange: (key: LevelKey) => void;
   /** モード固有のクリア条件の1行（先頭の「クリア条件：」は含めない） */
   clearRule: (level: Level) => string;
+  /** クリア条件の行の data-testid（既定 rule-clear。チャージは charge-rule） */
+  clearRuleTestId?: string;
   onBack: () => void;
   onStart: () => void;
 }
@@ -42,6 +44,7 @@ export function DifficultySetup({
   level,
   onLevelChange,
   clearRule,
+  clearRuleTestId = "rule-clear",
   onBack,
   onStart,
 }: SetupProps) {
@@ -57,7 +60,7 @@ export function DifficultySetup({
             お題：{jp(L.min)} 〜 {jp(L.max)} 回のあいだでランダム
           </li>
           <li data-testid="rule-turns">ターン数：{L.turns}</li>
-          <li data-testid="rule-clear">クリア条件：{clearRule(L)}</li>
+          <li data-testid={clearRuleTestId}>クリア条件：{clearRule(L)}</li>
         </ul>
         <button type="button" className="btn" onClick={onStart} data-testid="setup-start">
           お題を引く

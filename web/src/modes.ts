@@ -35,7 +35,7 @@ export const MODES: ModeInfo[] = [
  */
 export const enabledModes: Record<ModeId, boolean> = {
   countdown: true,
-  charge: false,
+  charge: true,
   versus: false,
 };
 
