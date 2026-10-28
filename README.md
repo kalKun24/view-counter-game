@@ -27,6 +27,21 @@ YouTubeの再生回数を使った数字ゲーム。サーバーがYouTube Data 
 - テストは `npm test`（Vitest を1回実行して終わる）。本物の API には出ず、`fetch` をモックする。ビルドは `npm run build`。
 - ゲーム内で使えるモックの特別なワードは、下の「モックの特別なワード」を見る。
 
+## 検証（-race と govulncheck）
+
+ホストに cgo・gcc・`govulncheck` が無くても、Docker があれば `server/` で次の2つを実行できる。`make` と Docker が必要である。
+
+```sh
+cd server
+make test-race   # Docker 内で go test -race ./... を実行し、全パッケージの結果を表示する
+make vuln        # Docker 内で govulncheck を実行し、結果を表示する
+```
+
+- `make test-race` は、全パッケージが通れば各行が `ok` になる。失敗があれば非 0 で終了する。
+- `make vuln` は、脆弱性が無ければ `No vulnerabilities found.` を表示する。検出があれば一覧を表示して非 0 で終了する。
+- Docker のイメージ（`golang:1.26.9-bookworm`）と `govulncheck` のバージョン（`v1.9.0`）は `server/Makefile` で固定している。上げるときは Makefile の2行を変える。
+- 初回はイメージと依存の取得のため、ネットワークと時間が要る。ソースは読み取り専用でマウントするため、リポジトリのファイルは変わらない。
+
 ## キャッシュ
 
 同じワードの組み合わせ（語順・大文字小文字・全角半角の違いを同一視）の検索結果は、サーバーのメモリにキャッシュして YouTube Data API のクォータを節約する。
