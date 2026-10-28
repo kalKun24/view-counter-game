@@ -1,0 +1,101 @@
+{
+  "failures": 0,
+  "scenes": [
+    {
+      "id": 4,
+      "checks": [
+        {
+          "selector": "[data-testid=counter-turns]",
+          "op": "expect_text",
+          "want": "残り5ターン",
+          "ok": true,
+          "actual": "残り5ターン"
+        },
+        {
+          "selector": "[data-testid=log-row]",
+          "op": "expect_count",
+          "want": 1,
+          "ok": true,
+          "actual": 1
+        },
+        {
+          "selector": "[data-testid=counter-turns]",
+          "op": "expect_text",
+          "want": "残り4ターン",
+          "ok": true,
+          "actual": "残り4ターン"
+        },
+        {
+          "selector": "[data-testid=quota-title]",
+          "op": "expect_text",
+          "want": "今日は遊べません",
+          "ok": true,
+          "actual": "今日は遊べません"
+        },
+        {
+          "selector": "[data-testid=result-heading]",
+          "op": "expect_count",
+          "want": 0,
+          "ok": true,
+          "actual": 0
+        },
+        {
+          "selector": "[data-testid=counter-turns]",
+          "op": "expect_text",
+          "want": "残り4ターン",
+          "ok": true,
+          "actual": "残り4ターン"
+        },
+        {
+          "selector": "[data-testid=log-row]",
+          "op": "expect_count",
+          "want": 1,
+          "ok": true,
+          "actual": 1
+        },
+        {
+          "selector": "[data-testid=retry-button]",
+          "op": "expect_count",
+          "want": 0,
+          "ok": true,
+          "actual": 0
+        },
+        {
+          "selector": "[data-testid=search-input]",
+          "op": "expect_count",
+          "want": 0,
+          "ok": true,
+          "actual": 0
+        },
+        {
+          "selector": "[data-testid=quota-home]",
+          "op": "expect_count",
+          "want": 1,
+          "ok": true,
+          "actual": 1
+        },
+        {
+          "selector": "[data-testid=quota-notice]",
+          "op": "expect_count",
+          "want": 0,
+          "ok": true,
+          "actual": 0
+        },
+        {
+          "selector": "[data-testid=mode-countdown]",
+          "op": "expect_count",
+          "want": 1,
+          "ok": true,
+          "actual": 1
+        }
+      ],
+      "screenshots": [
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-4/shots/20261028T220339/scene-4-before-quota.png",
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-4/shots/20261028T220339/scene-4-quota-notice.png",
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-4/shots/20261028T220339/scene-4-back-home.png"
+      ],
+      "error": null
+    }
+  ],
+  "console_errors": []
+}

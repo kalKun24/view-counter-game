@@ -1,0 +1,40 @@
+{
+  "viewport": [390, 844],
+  "scenes": [
+    {
+      "id": 4,
+      "title": "カウントダウンの途中で quota を入れる（#11）",
+      "steps": [
+        {"goto": "/"},
+        {"click": "[data-testid=mode-countdown]"},
+        {"wait": "[data-testid=setup-start]"},
+        {"click": "[data-testid=setup-start]"},
+        {"wait": "[data-testid=search-input]"},
+        {"expect_text": ["[data-testid=counter-turns]", "残り5ターン"]},
+        {"fill": ["[data-testid=search-input]", "n123456789 foo"]},
+        {"click": "[data-testid=search-submit]"},
+        {"expect_count": ["[data-testid=log-row]", 1]},
+        {"expect_text": ["[data-testid=counter-turns]", "残り4ターン"]},
+        {"screenshot": "before-quota"},
+        {"fill": ["[data-testid=search-input]", "quota"]},
+        {"click": "[data-testid=search-submit]"},
+        {"wait": "[data-testid=quota-notice]"},
+        {"expect_text": ["[data-testid=quota-title]", "今日は遊べません"]},
+        {"expect_count": ["[data-testid=result-heading]", 0]},
+        {"expect_text": ["[data-testid=counter-turns]", "残り4ターン"]},
+        {"expect_count": ["[data-testid=log-row]", 1]},
+        {"expect_count": ["[data-testid=retry-button]", 0]},
+        {"expect_count": ["[data-testid=search-input]", 0]},
+        {"expect_count": ["[data-testid=quota-home]", 1]},
+        {"sleep": 300},
+        {"screenshot": "quota-notice"},
+        {"click": "[data-testid=quota-home]"},
+        {"wait": "[data-testid=mode-countdown]"},
+        {"expect_count": ["[data-testid=quota-notice]", 0]},
+        {"expect_count": ["[data-testid=mode-countdown]", 1]},
+        {"sleep": 300},
+        {"screenshot": "back-home"}
+      ]
+    }
+  ]
+}

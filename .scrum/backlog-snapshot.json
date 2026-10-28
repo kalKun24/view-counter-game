@@ -19,6 +19,11 @@
   {"id": "#23", "title": "キャッシュ読み込みの異常終了を堅牢にする（Goexit とログ）", "status": "ready", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/23"},
   {"id": "#20", "title": "表示する文字列を安全にする", "status": "ready", "points": 3, "ui": "yes", "url": "https://github.com/kalKun24/view-counter-game/issues/20"},
   {"id": "#12", "title": "コンテナ化（静的配信と Dockerfile）", "status": "ready", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/12"},
-  {"id": "#13", "title": "Cloud Run への公開", "status": "ready", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/13"}
+  {"id": "#13", "title": "Cloud Run への公開", "status": "ready", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/13"},
+  {"id": "#25", "title": "連打の制限（429）の表示（画面）", "status": "new", "points": null, "ui": "yes", "url": "https://github.com/kalKun24/view-counter-game/issues/25"},
+  {"id": "#26", "title": "上流呼び出しの全体上限とクォータ切れ中の抑制", "status": "new", "points": null, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/26"},
+  {"id": "#27", "title": "回数制限の堅牢化（走査・ログ・プロキシの前提）", "status": "new", "points": null, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/27"},
+  {"id": "#28", "title": "検証環境と依存の固定（x/text v0.41.0、ダイジェスト、手順）", "status": "new", "points": null, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/28"},
+  {"id": "#29", "title": "設定の扱いとテストの確かさを揃える", "status": "new", "points": null, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/29"}
  ]
 }
