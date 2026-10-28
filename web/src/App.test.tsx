@@ -110,6 +110,15 @@ describe("難易度設定（受け入れ基準 1）", () => {
 });
 
 describe("プレイ：取得して引く（受け入れ基準 2・3・4）", () => {
+  it("お題は 10,000 未満を切り捨てた値で表示される（5億1234万5678 → 5億1234万）", async () => {
+    mockFetch(found(1234567, "猫とピアノ"));
+    const user = setup();
+    await startGame(user, { target: 512_345_678 });
+    expect(tid("counter-value")).toHaveTextContent("512,340,000");
+    expect(tid("counter-target")).toHaveTextContent("5億1234万");
+    expect(tid("counter-target")).not.toHaveTextContent("5678");
+  });
+
   it("お題を表示し、API の再生回数を10,000未満切り捨てで引く", async () => {
     const f = mockFetch(found(1234567, "猫とピアノ"));
     const user = setup();

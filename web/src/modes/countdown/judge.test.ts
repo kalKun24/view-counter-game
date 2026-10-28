@@ -1,7 +1,7 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { LogRow } from "../../components/WordLog";
 import { LEVELS } from "../../lib/levels";
-import { clearRuleText, judge, remainingOf } from "./judge";
+import { clearRuleText, judge, pickTarget, remainingOf } from "./judge";
 
 const row = (truncated: number): LogRow => ({ query: "q", truncated, actual: truncated, title: "t" });
 
@@ -53,5 +53,26 @@ describe("clearRuleText", () => {
     expect(clearRuleText(LEVELS.easy)).toBe("残りがお題の 5% 以下（0未満はアウト）");
     expect(clearRuleText(LEVELS.normal)).toContain("2%");
     expect(clearRuleText(LEVELS.hard)).toContain("0.5%");
+  });
+});
+
+describe("pickTarget（お題は 10,000 未満を切り捨てる）", () => {
+  afterEach(() => vi.restoreAllMocks());
+
+  it.each(["easy", "normal", "hard"] as const)("%s：端数のある乱数でも 1 万単位になる", (key) => {
+    const L = LEVELS[key];
+    for (const r of [0, 0.123456789, 0.5, 0.987654321, 0.9999999]) {
+      vi.spyOn(Math, "random").mockReturnValue(r);
+      const t = pickTarget(L);
+      expect(t % 10000).toBe(0);
+      expect(t).toBeGreaterThanOrEqual(L.min);
+      expect(t).toBeLessThanOrEqual(L.max);
+    }
+  });
+
+  it("5億1234万5678 になる乱数でも 5億1234万 になる", () => {
+    const L = LEVELS.normal;
+    vi.spyOn(Math, "random").mockReturnValue((512345678.5 - L.min) / (L.max - L.min));
+    expect(pickTarget(L)).toBe(512340000);
   });
 });

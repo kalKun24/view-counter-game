@@ -2,12 +2,12 @@ import { useState } from "react";
 import { DifficultySetup } from "../../components/DifficultySetup";
 import { ResultView } from "../../components/ResultView";
 import { WordLog, type LogRow } from "../../components/WordLog";
-import { comma, rand } from "../../lib/format";
+import { comma } from "../../lib/format";
 import { LEVELS, type LevelKey } from "../../lib/levels";
 import { loadLevel, savePrefs } from "../../lib/prefs";
 import { modeTitle } from "../../modes";
 import { CountdownPlay, type CountdownFinish } from "./CountdownPlay";
-import { clearRuleText, remainingOf } from "./judge";
+import { clearRuleText, pickTarget, remainingOf } from "./judge";
 
 type Phase =
   | { name: "setup" }
@@ -34,8 +34,7 @@ export function CountdownMode({ onExit }: { onExit: () => void }) {
         clearRule={clearRuleText}
         onBack={onExit}
         onStart={() => {
-          const L = LEVELS[level];
-          setPhase({ name: "play", target: rand(L.min, L.max), level });
+          setPhase({ name: "play", target: pickTarget(LEVELS[level]), level });
         }}
       />
     );

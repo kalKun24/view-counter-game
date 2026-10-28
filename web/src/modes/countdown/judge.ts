@@ -1,5 +1,5 @@
 import type { LogRow } from "../../components/WordLog";
-import { percent } from "../../lib/format";
+import { percent, rand, truncateViews } from "../../lib/format";
 import type { Level } from "../../lib/levels";
 
 export type Outcome = "out-negative" | "clear" | "out-turns" | "continue";
@@ -29,3 +29,6 @@ export function judge(target: number, level: Level, log: LogRow[]): Outcome {
 
 export const clearRuleText = (level: Level): string =>
   `残りがお題の ${percent(level.tol)}% 以下（0未満はアウト）`;
+
+/** お題を引く：難易度の範囲から選び、10,000 未満を切り捨てる（プレイヤーの入力も 1 万単位のため）。 */
+export const pickTarget = (level: Level): number => truncateViews(rand(level.min, level.max));
