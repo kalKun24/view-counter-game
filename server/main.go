@@ -3,7 +3,9 @@
 // Environment variables:
 //
 //	YOUTUBE_API_KEY  required unless USE_MOCK=1; YouTube Data API v3 key
-//	USE_MOCK         optional; "1" uses a mock client (no API key, no real API calls)
+//	USE_MOCK         optional; "1" uses a mock client (no API key, no real API calls);
+//	                 values other than "", "0", "1" are a startup error;
+//	                 setting it together with YOUTUBE_API_KEY is a startup error
 //	CACHE_TTL        optional; cache lifetime in time.ParseDuration format (default 1h)
 //	PORT             optional; listen port (default 8080)
 package main
@@ -21,10 +23,20 @@ import (
 	"github.com/kalKun24/view-counter-game/server/internal/youtube"
 )
 
-// newClient chooses the YouTube client from the environment. USE_MOCK=1 takes
-// precedence over YOUTUBE_API_KEY, which is then ignored.
+// newClient chooses the YouTube client from the environment. USE_MOCK=1
+// together with a non-empty YOUTUBE_API_KEY is contradictory, so it is an
+// error rather than silently preferring one. The error names both variables
+// but never includes the key value.
 func newClient(getenv func(string) string, log *slog.Logger) (youtube.Client, error) {
+	switch v := getenv("USE_MOCK"); v {
+	case "", "0", "1":
+	default:
+		return nil, fmt.Errorf("USE_MOCK=%q is invalid (use 1 to enable the mock, or leave it unset or 0)", v)
+	}
 	if getenv("USE_MOCK") == "1" {
+		if getenv("YOUTUBE_API_KEY") != "" {
+			return nil, errors.New("USE_MOCK=1 and YOUTUBE_API_KEY are both set (unset one of them)")
+		}
 		log.Info("youtube client: mock")
 		return youtube.NewMockClient(), nil
 	}
