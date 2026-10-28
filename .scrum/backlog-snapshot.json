@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-28T19:25:07+09:00",
+ "updated_at": "2026-10-28T20:10:00+09:00",
  "items": [
   {
    "id": "#1",
@@ -128,6 +128,30 @@
    "points": null,
    "ui": "yes",
    "url": "https://github.com/kalKun24/view-counter-game/issues/20"
+  },
+  {
+   "id": "#21",
+   "title": "検出した脆弱性を修正する（x/text と Go のツールチェーン）",
+   "status": "new",
+   "points": null,
+   "ui": "no",
+   "url": "https://github.com/kalKun24/view-counter-game/issues/21"
+  },
+  {
+   "id": "#22",
+   "title": "YouTube クライアントの既定にタイムアウトを付ける",
+   "status": "new",
+   "points": null,
+   "ui": "no",
+   "url": "https://github.com/kalKun24/view-counter-game/issues/22"
+  },
+  {
+   "id": "#23",
+   "title": "キャッシュ読み込みの異常終了を堅牢にする（Goexit とログ）",
+   "status": "new",
+   "points": null,
+   "ui": "no",
+   "url": "https://github.com/kalKun24/view-counter-game/issues/23"
   }
  ]
 }
