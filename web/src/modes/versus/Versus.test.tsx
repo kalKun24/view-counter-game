@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import App from "./../../App";
@@ -207,6 +207,23 @@ describe("lower（受け入れ基準 2・3）", () => {
     expect(tid("counter-value")).toHaveTextContent("499,990,000");
     await search(user, "w3");
     expect(tid("vs-handoff-result")).toHaveTextContent("C：3億 OK");
+  });
+
+  it("最初のお題は10,000未満を切り捨てた値で、範囲の下限・上限を保つ", async () => {
+    for (const r of [0.123456789, 0.987654321, 0.999999999]) {
+      const user = setup();
+      vi.spyOn(Math, "random").mockReturnValue(r);
+      mockFetch();
+      await start(user, ["A", "B"], "lower");
+      const raw = Math.floor(5e8 + r * (3e9 - 5e8));
+      const expected = Math.floor(raw / 10000) * 10000;
+      expect(raw % 10000).not.toBe(0); // 端数のある乱数で確かめる
+      expect(tid("counter-value")).toHaveTextContent(expected.toLocaleString("ja-JP"));
+      expect(expected).toBeGreaterThanOrEqual(5e8);
+      expect(expected).toBeLessThan(3e9);
+      cleanup();
+      vi.restoreAllMocks();
+    }
   });
 
   it("10,000回未満の動画（判定値0）は、残り人数に関わらずその場で勝ち", async () => {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Heading } from "../../components/Heading";
 import { WordLog } from "../../components/WordLog";
-import { rand } from "../../lib/format";
+import { rand, truncateViews } from "../../lib/format";
 import { modeTitle } from "../../modes";
 import type { Direction, Move } from "./judge";
 import { Survivors, type SurvivorStatus } from "./Survivors";
@@ -32,8 +32,8 @@ export function VersusMode({ onExit }: { onExit: () => void }) {
         }}
         onBack={onExit}
         onStart={(dir, names) =>
-          // lower の最初のお題は試作版と同じ rand(5e8, 3e9)
-          setPhase({ name: "play", names, dir, topic: dir === "lower" ? rand(5e8, 3e9) : null })
+          // lower の最初のお題は試作版と同じ範囲 rand(5e8, 3e9) を、判定値と同じく10,000未満切り捨てにする
+          setPhase({ name: "play", names, dir, topic: dir === "lower" ? truncateViews(rand(5e8, 3e9)) : null })
         }
       />
     );
