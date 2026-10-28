@@ -1,0 +1,1274 @@
+{
+  "failures": 0,
+  "scenes": [
+    {
+      "id": 1,
+      "checks": [
+        {
+          "selector": "[data-testid=rule-turns]",
+          "op": "expect_text",
+          "want": "ターン数：5",
+          "ok": true,
+          "actual": "ターン数：5"
+        },
+        {
+          "selector": "[data-testid=counter-turns]",
+          "op": "expect_text",
+          "want": "残り5ターン",
+          "ok": true,
+          "actual": "残り5ターン"
+        },
+        {
+          "selector": "[data-testid=log-row]",
+          "op": "expect_count",
+          "want": 1,
+          "ok": true,
+          "actual": 1
+        },
+        {
+          "selector": "[data-testid=log-value]",
+          "op": "expect_text",
+          "want": "−1億2345万",
+          "ok": true,
+          "actual": "−1億2345万"
+        },
+        {
+          "selector": "[data-testid=log-actual]",
+          "op": "expect_text",
+          "want": "123,456,789",
+          "ok": true,
+          "actual": "実際の再生回数 123,456,789 回"
+        },
+        {
+          "selector": "[data-testid=log-title]",
+          "op": "expect_text",
+          "want": "Mock video: foo n123456789",
+          "ok": true,
+          "actual": "Mock video: foo n123456789"
+        },
+        {
+          "selector": "[data-testid=counter-turns]",
+          "op": "expect_text",
+          "want": "残り4ターン",
+          "ok": true,
+          "actual": "残り4ターン"
+        }
+      ],
+      "screenshots": [
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-1-setup.png",
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-1-play-start.png",
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-1-after-first-word.png"
+      ],
+      "error": null
+    },
+    {
+      "id": 2,
+      "checks": [
+        {
+          "selector": "[data-testid=error-message]",
+          "op": "expect_text",
+          "want": "もう使われています",
+          "ok": true,
+          "actual": "そのワードの組み合わせはもう使われています。"
+        },
+        {
+          "selector": "[data-testid=log-row]",
+          "op": "expect_count",
+          "want": 1,
+          "ok": true,
+          "actual": 1
+        },
+        {
+          "selector": "[data-testid=counter-turns]",
+          "op": "expect_text",
+          "want": "残り4ターン",
+          "ok": true,
+          "actual": "残り4ターン"
+        },
+        {
+          "selector": "[data-testid=error-message]",
+          "op": "expect_text",
+          "want": "もう使われています",
+          "ok": true,
+          "actual": "そのワードの組み合わせはもう使われています。"
+        },
+        {
+          "selector": "[data-testid=log-row]",
+          "op": "expect_count",
+          "want": 1,
+          "ok": true,
+          "actual": 1
+        }
+      ],
+      "screenshots": [
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-2-duplicate.png"
+      ],
+      "error": null
+    },
+    {
+      "id": 3,
+      "checks": [
+        {
+          "selector": "[data-testid=result-heading]",
+          "op": "expect_text",
+          "want": "GAME OVER",
+          "ok": true,
+          "actual": "GAME OVER"
+        },
+        {
+          "selector": "[data-testid=result-reason]",
+          "op": "expect_text",
+          "want": "条件に合う動画が見つかりませんでした",
+          "ok": true,
+          "actual": "条件に合う動画が見つかりませんでした。（ワード：nomatch）"
+        }
+      ],
+      "screenshots": [
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-3-game-over.png"
+      ],
+      "error": null
+    },
+    {
+      "id": 4,
+      "checks": [
+        {
+          "selector": "[data-testid=loading-message]",
+          "op": "expect_text",
+          "want": "取得中",
+          "ok": true,
+          "actual": "取得中…"
+        },
+        {
+          "selector": "[data-testid=search-submit]:disabled",
+          "op": "expect_count",
+          "want": 1,
+          "ok": true,
+          "actual": 1
+        },
+        {
+          "selector": "[data-testid=log-row]",
+          "op": "expect_count",
+          "want": 1,
+          "ok": true,
+          "actual": 1
+        },
+        {
+          "selector": "[data-testid=loading-message]",
+          "op": "expect_count",
+          "want": 0,
+          "ok": true,
+          "actual": 0
+        },
+        {
+          "selector": "[data-testid=counter-turns]",
+          "op": "expect_text",
+          "want": "残り4ターン",
+          "ok": true,
+          "actual": "残り4ターン"
+        },
+        {
+          "selector": "[data-testid=error-message]",
+          "op": "expect_text",
+          "want": "取得に失敗しました",
+          "ok": true,
+          "actual": "取得に失敗しました。通信を確かめて、もう一度試してください。"
+        },
+        {
+          "selector": "[data-testid=retry-button]",
+          "op": "expect_count",
+          "want": 1,
+          "ok": true,
+          "actual": 1
+        },
+        {
+          "selector": "[data-testid=counter-turns]",
+          "op": "expect_text",
+          "want": "残り4ターン",
+          "ok": true,
+          "actual": "残り4ターン"
+        },
+        {
+          "selector": "[data-testid=log-row]",
+          "op": "expect_count",
+          "want": 1,
+          "ok": true,
+          "actual": 1
+        }
+      ],
+      "screenshots": [
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-4-slow-loading.png",
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-4-error-retry.png"
+      ],
+      "error": null
+    },
+    {
+      "id": "5a",
+      "checks": [
+        {
+          "selector": "[data-testid=charge-rule]",
+          "op": "expect_text",
+          "want": "クリア条件",
+          "ok": true,
+          "actual": "クリア条件：目標以上、かつ目標の 102% 以下（超えたらバースト）"
+        },
+        {
+          "selector": "[data-testid=charge-total]",
+          "op": "expect_text",
+          "want": "0",
+          "ok": true,
+          "actual": "0"
+        },
+        {
+          "selector": "[data-testid=result-heading]",
+          "op": "expect_text",
+          "want": "GAME OVER",
+          "ok": true,
+          "actual": "GAME OVER"
+        },
+        {
+          "selector": "[data-testid=result-reason]",
+          "op": "expect_text",
+          "want": "バースト",
+          "ok": true,
+          "actual": "上限を超えてバースト！"
+        }
+      ],
+      "screenshots": [
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-5a-setup.png",
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-5a-play-start.png",
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-5a-burst.png"
+      ],
+      "error": null
+    },
+    {
+      "id": "5b",
+      "checks": [
+        {
+          "selector": "[data-testid=log-row]",
+          "op": "expect_count",
+          "want": 1,
+          "ok": true,
+          "actual": 1
+        },
+        {
+          "selector": "[data-testid=charge-total]",
+          "op": "expect_text",
+          "want": "20,000,000",
+          "ok": true,
+          "actual": "20,000,000"
+        },
+        {
+          "selector": "[data-testid=log-row]",
+          "op": "expect_count",
+          "want": 2,
+          "ok": true,
+          "actual": 2
+        },
+        {
+          "selector": "[data-testid=log-row]",
+          "op": "expect_count",
+          "want": 3,
+          "ok": true,
+          "actual": 3
+        },
+        {
+          "selector": "[data-testid=charge-total]",
+          "op": "expect_text",
+          "want": "60,000,000",
+          "ok": true,
+          "actual": "60,000,000"
+        },
+        {
+          "selector": "[data-testid=charge-sub]",
+          "op": "expect_text",
+          "want": "残り2ターン",
+          "ok": true,
+          "actual": "あと 3億8434万 回 ／ 残り2ターン"
+        },
+        {
+          "selector": "[data-testid=log-row]",
+          "op": "expect_count",
+          "want": 4,
+          "ok": true,
+          "actual": 4
+        },
+        {
+          "selector": "[data-testid=result-heading]",
+          "op": "expect_text",
+          "want": "GAME OVER",
+          "ok": true,
+          "actual": "GAME OVER"
+        },
+        {
+          "selector": "[data-testid=result-reason]",
+          "op": "expect_text",
+          "want": "ターン切れ",
+          "ok": true,
+          "actual": "ターン切れ。"
+        },
+        {
+          "selector": "[data-testid=result-detail]",
+          "op": "expect_text",
+          "want": "合計 100,000,000 回",
+          "ok": true,
+          "actual": "合計 100,000,000 回（目標の 22.5%）・5ターン"
+        }
+      ],
+      "screenshots": [
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-5b-stacked.png",
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-5b-out-of-turns.png"
+      ],
+      "error": null
+    },
+    {
+      "id": 6,
+      "checks": [
+        {
+          "selector": "[data-testid=vs-player-count]",
+          "op": "expect_text",
+          "want": "現在 2 人",
+          "ok": true,
+          "actual": "現在 2 人"
+        },
+        {
+          "selector": "[data-testid=vs-player-count]",
+          "op": "expect_text",
+          "want": "現在 3 人",
+          "ok": true,
+          "actual": "現在 3 人"
+        },
+        {
+          "selector": "[data-testid=vs-alive-count]",
+          "op": "expect_text",
+          "want": "のこり 3 人 / 全 3 人",
+          "ok": true,
+          "actual": "のこり 3 人 / 全 3 人"
+        },
+        {
+          "selector": "[data-testid=vs-current-player]",
+          "op": "expect_text",
+          "want": "Aki",
+          "ok": true,
+          "actual": "Aki"
+        },
+        {
+          "selector": "[data-testid=vs-handoff-result]",
+          "op": "expect_text",
+          "want": "Aki",
+          "ok": true,
+          "actual": "Aki：1億 OK"
+        },
+        {
+          "selector": "[data-testid=vs-current-player]",
+          "op": "expect_text",
+          "want": "Ben",
+          "ok": true,
+          "actual": "Ben"
+        },
+        {
+          "selector": "[data-testid=vs-current-player]",
+          "op": "expect_text",
+          "want": "Cho",
+          "ok": true,
+          "actual": "Cho"
+        },
+        {
+          "selector": "[data-testid=vs-handoff-result]",
+          "op": "expect_text",
+          "want": "Cho は脱落",
+          "ok": true,
+          "actual": "Cho は脱落！（1億5000万 は 2億 より高くない）"
+        },
+        {
+          "selector": "[data-testid=vs-log-out]",
+          "op": "expect_count",
+          "want": 1,
+          "ok": true,
+          "actual": 1
+        },
+        {
+          "selector": "[data-testid=vs-alive-count]",
+          "op": "expect_text",
+          "want": "のこり 2 人 / 全 3 人",
+          "ok": true,
+          "actual": "のこり 2 人 / 全 3 人"
+        },
+        {
+          "selector": "[data-testid=vs-current-player]",
+          "op": "expect_text",
+          "want": "Aki",
+          "ok": true,
+          "actual": "Aki"
+        },
+        {
+          "selector": "[data-testid=vs-current-player]",
+          "op": "expect_text",
+          "want": "Ben",
+          "ok": true,
+          "actual": "Ben"
+        },
+        {
+          "selector": "[data-testid=vs-winner-name]",
+          "op": "expect_text",
+          "want": "Aki の勝ち！",
+          "ok": true,
+          "actual": "Aki の勝ち！"
+        },
+        {
+          "selector": "[data-testid=vs-winner-reason]",
+          "op": "expect_text",
+          "want": "最後の1人まで生き残った",
+          "ok": true,
+          "actual": "最後の1人まで生き残った！"
+        },
+        {
+          "selector": "[data-testid=vs-log-out]",
+          "op": "expect_count",
+          "want": 2,
+          "ok": true,
+          "actual": 2
+        }
+      ],
+      "screenshots": [
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-6-setup.png",
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-6-cho-out.png",
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-6-skipped-cho.png",
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-6-winner.png"
+      ],
+      "error": null
+    },
+    {
+      "id": 7,
+      "checks": [
+        {
+          "selector": "[data-testid=vs-player-count]",
+          "op": "expect_text",
+          "want": "現在 3 人",
+          "ok": true,
+          "actual": "現在 3 人"
+        },
+        {
+          "selector": "[data-testid=vs-current-player]",
+          "op": "expect_text",
+          "want": "Aki",
+          "ok": true,
+          "actual": "Aki"
+        },
+        {
+          "selector": "[data-testid=vs-counter]",
+          "op": "expect_text",
+          "want": "お題より低く",
+          "ok": true,
+          "actual": "Aki の番 ・ お題より低く 1,755,140,000 17億5514万 回"
+        },
+        {
+          "selector": "[data-testid=vs-current-player]",
+          "op": "expect_text",
+          "want": "Ben",
+          "ok": true,
+          "actual": "Ben"
+        },
+        {
+          "selector": "[data-testid=vs-winner-name]",
+          "op": "expect_text",
+          "want": "Ben の勝ち！",
+          "ok": true,
+          "actual": "Ben の勝ち！"
+        },
+        {
+          "selector": "[data-testid=vs-winner-reason]",
+          "op": "expect_text",
+          "want": "0ちょうどを出した",
+          "ok": true,
+          "actual": "Ben が0ちょうどを出した！ 残りの人数に関係なく、その場で勝ち。"
+        },
+        {
+          "selector": "[data-testid=vs-winner-reason]",
+          "op": "expect_text",
+          "want": "残りの人数に関係なく",
+          "ok": true,
+          "actual": "Ben が0ちょうどを出した！ 残りの人数に関係なく、その場で勝ち。"
+        },
+        {
+          "selector": "[data-testid=log]",
+          "op": "expect_text",
+          "want": "実際の再生回数 5,000 回",
+          "ok": true,
+          "actual": "01 Aki：n100000000 x Mock video: n100000000 x 実際の再生回数 100,000,000 回 1億 02 Ben：n5000 y Mock video: n5000 y 実際の再生回数 5,000 回 0"
+        }
+      ],
+      "screenshots": [
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-7-before-zero.png",
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-7-zero-win.png"
+      ],
+      "error": null
+    },
+    {
+      "id": "8a",
+      "checks": [
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_text",
+          "want": "億",
+          "ok": true,
+          "actual": "2億7644万"
+        },
+        {
+          "selector": "[data-testid=counter-value]",
+          "op": "expect_text",
+          "want": "0,000",
+          "ok": true,
+          "actual": "276,440,000"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万1",
+          "ok": true,
+          "actual": "2億7644万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万2",
+          "ok": true,
+          "actual": "2億7644万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万3",
+          "ok": true,
+          "actual": "2億7644万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万4",
+          "ok": true,
+          "actual": "2億7644万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万5",
+          "ok": true,
+          "actual": "2億7644万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万6",
+          "ok": true,
+          "actual": "2億7644万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万7",
+          "ok": true,
+          "actual": "2億7644万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万8",
+          "ok": true,
+          "actual": "2億7644万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万9",
+          "ok": true,
+          "actual": "2億7644万"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万1",
+          "ok": true,
+          "actual": "2億7644万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万2",
+          "ok": true,
+          "actual": "2億7644万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万3",
+          "ok": true,
+          "actual": "2億7644万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万4",
+          "ok": true,
+          "actual": "2億7644万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万5",
+          "ok": true,
+          "actual": "2億7644万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万6",
+          "ok": true,
+          "actual": "2億7644万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万7",
+          "ok": true,
+          "actual": "2億7644万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万8",
+          "ok": true,
+          "actual": "2億7644万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万9",
+          "ok": true,
+          "actual": "2億7644万 回"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_text",
+          "want": "億",
+          "ok": true,
+          "actual": "9億6348万"
+        },
+        {
+          "selector": "[data-testid=counter-value]",
+          "op": "expect_text",
+          "want": "0,000",
+          "ok": true,
+          "actual": "963,480,000"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万1",
+          "ok": true,
+          "actual": "9億6348万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万2",
+          "ok": true,
+          "actual": "9億6348万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万3",
+          "ok": true,
+          "actual": "9億6348万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万4",
+          "ok": true,
+          "actual": "9億6348万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万5",
+          "ok": true,
+          "actual": "9億6348万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万6",
+          "ok": true,
+          "actual": "9億6348万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万7",
+          "ok": true,
+          "actual": "9億6348万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万8",
+          "ok": true,
+          "actual": "9億6348万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万9",
+          "ok": true,
+          "actual": "9億6348万"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万1",
+          "ok": true,
+          "actual": "9億6348万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万2",
+          "ok": true,
+          "actual": "9億6348万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万3",
+          "ok": true,
+          "actual": "9億6348万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万4",
+          "ok": true,
+          "actual": "9億6348万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万5",
+          "ok": true,
+          "actual": "9億6348万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万6",
+          "ok": true,
+          "actual": "9億6348万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万7",
+          "ok": true,
+          "actual": "9億6348万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万8",
+          "ok": true,
+          "actual": "9億6348万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万9",
+          "ok": true,
+          "actual": "9億6348万 回"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_text",
+          "want": "億",
+          "ok": true,
+          "actual": "12億509万"
+        },
+        {
+          "selector": "[data-testid=counter-value]",
+          "op": "expect_text",
+          "want": "0,000",
+          "ok": true,
+          "actual": "1,205,090,000"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万1",
+          "ok": true,
+          "actual": "12億509万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万2",
+          "ok": true,
+          "actual": "12億509万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万3",
+          "ok": true,
+          "actual": "12億509万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万4",
+          "ok": true,
+          "actual": "12億509万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万5",
+          "ok": true,
+          "actual": "12億509万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万6",
+          "ok": true,
+          "actual": "12億509万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万7",
+          "ok": true,
+          "actual": "12億509万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万8",
+          "ok": true,
+          "actual": "12億509万"
+        },
+        {
+          "selector": "[data-testid=counter-target]",
+          "op": "expect_no_text",
+          "want": "万9",
+          "ok": true,
+          "actual": "12億509万"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万1",
+          "ok": true,
+          "actual": "12億509万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万2",
+          "ok": true,
+          "actual": "12億509万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万3",
+          "ok": true,
+          "actual": "12億509万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万4",
+          "ok": true,
+          "actual": "12億509万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万5",
+          "ok": true,
+          "actual": "12億509万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万6",
+          "ok": true,
+          "actual": "12億509万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万7",
+          "ok": true,
+          "actual": "12億509万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万8",
+          "ok": true,
+          "actual": "12億509万 回"
+        },
+        {
+          "selector": "[data-testid=counter-sub]",
+          "op": "expect_no_text",
+          "want": "万9",
+          "ok": true,
+          "actual": "12億509万 回"
+        }
+      ],
+      "screenshots": [
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-8a-topic-easy.png",
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-8a-topic-normal.png",
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-8a-topic-hard.png"
+      ],
+      "error": null
+    },
+    {
+      "id": "8b",
+      "checks": [
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_text",
+          "want": "上限",
+          "ok": true,
+          "actual": "合計 ・ 目標 1億9937万 〜 上限 2億933万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_text",
+          "want": "億",
+          "ok": true,
+          "actual": "合計 ・ 目標 1億9937万 〜 上限 2億933万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万1",
+          "ok": true,
+          "actual": "合計 ・ 目標 1億9937万 〜 上限 2億933万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万2",
+          "ok": true,
+          "actual": "合計 ・ 目標 1億9937万 〜 上限 2億933万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万3",
+          "ok": true,
+          "actual": "合計 ・ 目標 1億9937万 〜 上限 2億933万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万4",
+          "ok": true,
+          "actual": "合計 ・ 目標 1億9937万 〜 上限 2億933万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万5",
+          "ok": true,
+          "actual": "合計 ・ 目標 1億9937万 〜 上限 2億933万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万6",
+          "ok": true,
+          "actual": "合計 ・ 目標 1億9937万 〜 上限 2億933万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万7",
+          "ok": true,
+          "actual": "合計 ・ 目標 1億9937万 〜 上限 2億933万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万8",
+          "ok": true,
+          "actual": "合計 ・ 目標 1億9937万 〜 上限 2億933万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万9",
+          "ok": true,
+          "actual": "合計 ・ 目標 1億9937万 〜 上限 2億933万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_text",
+          "want": "上限",
+          "ok": true,
+          "actual": "合計 ・ 目標 3億4985万 〜 上限 3億5684万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_text",
+          "want": "億",
+          "ok": true,
+          "actual": "合計 ・ 目標 3億4985万 〜 上限 3億5684万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万1",
+          "ok": true,
+          "actual": "合計 ・ 目標 3億4985万 〜 上限 3億5684万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万2",
+          "ok": true,
+          "actual": "合計 ・ 目標 3億4985万 〜 上限 3億5684万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万3",
+          "ok": true,
+          "actual": "合計 ・ 目標 3億4985万 〜 上限 3億5684万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万4",
+          "ok": true,
+          "actual": "合計 ・ 目標 3億4985万 〜 上限 3億5684万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万5",
+          "ok": true,
+          "actual": "合計 ・ 目標 3億4985万 〜 上限 3億5684万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万6",
+          "ok": true,
+          "actual": "合計 ・ 目標 3億4985万 〜 上限 3億5684万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万7",
+          "ok": true,
+          "actual": "合計 ・ 目標 3億4985万 〜 上限 3億5684万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万8",
+          "ok": true,
+          "actual": "合計 ・ 目標 3億4985万 〜 上限 3億5684万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万9",
+          "ok": true,
+          "actual": "合計 ・ 目標 3億4985万 〜 上限 3億5684万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_text",
+          "want": "上限",
+          "ok": true,
+          "actual": "合計 ・ 目標 26億4635万 〜 上限 26億5958万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_text",
+          "want": "億",
+          "ok": true,
+          "actual": "合計 ・ 目標 26億4635万 〜 上限 26億5958万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万1",
+          "ok": true,
+          "actual": "合計 ・ 目標 26億4635万 〜 上限 26億5958万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万2",
+          "ok": true,
+          "actual": "合計 ・ 目標 26億4635万 〜 上限 26億5958万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万3",
+          "ok": true,
+          "actual": "合計 ・ 目標 26億4635万 〜 上限 26億5958万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万4",
+          "ok": true,
+          "actual": "合計 ・ 目標 26億4635万 〜 上限 26億5958万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万5",
+          "ok": true,
+          "actual": "合計 ・ 目標 26億4635万 〜 上限 26億5958万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万6",
+          "ok": true,
+          "actual": "合計 ・ 目標 26億4635万 〜 上限 26億5958万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万7",
+          "ok": true,
+          "actual": "合計 ・ 目標 26億4635万 〜 上限 26億5958万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万8",
+          "ok": true,
+          "actual": "合計 ・ 目標 26億4635万 〜 上限 26億5958万"
+        },
+        {
+          "selector": "[data-testid=charge-label]",
+          "op": "expect_no_text",
+          "want": "万9",
+          "ok": true,
+          "actual": "合計 ・ 目標 26億4635万 〜 上限 26億5958万"
+        }
+      ],
+      "screenshots": [
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-8b-target-easy.png",
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-8b-target-normal.png",
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-8b-target-hard.png"
+      ],
+      "error": null
+    },
+    {
+      "id": "8c",
+      "checks": [
+        {
+          "selector": "[data-testid=vs-counter]",
+          "op": "expect_text",
+          "want": "お題より低く",
+          "ok": true,
+          "actual": "Aki の番 ・ お題より低く 2,376,700,000 23億7670万 回"
+        },
+        {
+          "selector": "[data-testid=vs-counter]",
+          "op": "expect_text",
+          "want": "億",
+          "ok": true,
+          "actual": "Aki の番 ・ お題より低く 2,376,700,000 23億7670万 回"
+        },
+        {
+          "selector": "[data-testid=counter-value]",
+          "op": "expect_text",
+          "want": "0,000",
+          "ok": true,
+          "actual": "2,376,700,000"
+        },
+        {
+          "selector": "[data-testid=vs-counter]",
+          "op": "expect_no_text",
+          "want": "万1",
+          "ok": true,
+          "actual": "Aki の番 ・ お題より低く 2,376,700,000 23億7670万 回"
+        },
+        {
+          "selector": "[data-testid=vs-counter]",
+          "op": "expect_no_text",
+          "want": "万2",
+          "ok": true,
+          "actual": "Aki の番 ・ お題より低く 2,376,700,000 23億7670万 回"
+        },
+        {
+          "selector": "[data-testid=vs-counter]",
+          "op": "expect_no_text",
+          "want": "万3",
+          "ok": true,
+          "actual": "Aki の番 ・ お題より低く 2,376,700,000 23億7670万 回"
+        },
+        {
+          "selector": "[data-testid=vs-counter]",
+          "op": "expect_no_text",
+          "want": "万4",
+          "ok": true,
+          "actual": "Aki の番 ・ お題より低く 2,376,700,000 23億7670万 回"
+        },
+        {
+          "selector": "[data-testid=vs-counter]",
+          "op": "expect_no_text",
+          "want": "万5",
+          "ok": true,
+          "actual": "Aki の番 ・ お題より低く 2,376,700,000 23億7670万 回"
+        },
+        {
+          "selector": "[data-testid=vs-counter]",
+          "op": "expect_no_text",
+          "want": "万6",
+          "ok": true,
+          "actual": "Aki の番 ・ お題より低く 2,376,700,000 23億7670万 回"
+        },
+        {
+          "selector": "[data-testid=vs-counter]",
+          "op": "expect_no_text",
+          "want": "万7",
+          "ok": true,
+          "actual": "Aki の番 ・ お題より低く 2,376,700,000 23億7670万 回"
+        },
+        {
+          "selector": "[data-testid=vs-counter]",
+          "op": "expect_no_text",
+          "want": "万8",
+          "ok": true,
+          "actual": "Aki の番 ・ お題より低く 2,376,700,000 23億7670万 回"
+        },
+        {
+          "selector": "[data-testid=vs-counter]",
+          "op": "expect_no_text",
+          "want": "万9",
+          "ok": true,
+          "actual": "Aki の番 ・ お題より低く 2,376,700,000 23億7670万 回"
+        }
+      ],
+      "screenshots": [
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-2/shots/20261028T190128/scene-8c-first-topic.png"
+      ],
+      "error": null
+    }
+  ],
+  "console_errors": []
+}

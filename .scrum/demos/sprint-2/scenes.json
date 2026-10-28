@@ -1,0 +1,1613 @@
+{
+ "viewport": [
+  390,
+  844
+ ],
+ "scenes": [
+  {
+   "id": 1,
+   "title": "カウントダウンの「ふつう」でお題を引き、ワードを入れて決定する",
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": "[data-testid=mode-countdown]"
+    },
+    {
+     "wait": "[data-testid=setup-start]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=rule-turns]",
+      "ターン数：5"
+     ]
+    },
+    {
+     "screenshot": "setup"
+    },
+    {
+     "click": "[data-testid=setup-start]"
+    },
+    {
+     "wait": "[data-testid=search-input]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=counter-turns]",
+      "残り5ターン"
+     ]
+    },
+    {
+     "screenshot": "play-start"
+    },
+    {
+     "fill": [
+      "[data-testid=search-input]",
+      "n123456789 foo"
+     ]
+    },
+    {
+     "click": "[data-testid=search-submit]"
+    },
+    {
+     "expect_count": [
+      "[data-testid=log-row]",
+      1
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=log-value]",
+      "−1億2345万"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=log-actual]",
+      "123,456,789"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=log-title]",
+      "Mock video: foo n123456789"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=counter-turns]",
+      "残り4ターン"
+     ]
+    },
+    {
+     "screenshot": "after-first-word"
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "title": "語順や全角半角を変えた同じワードを入れる",
+   "steps": [
+    {
+     "fill": [
+      "[data-testid=search-input]",
+      "ＦＯＯ　Ｎ１２３４５６７８９"
+     ]
+    },
+    {
+     "click": "[data-testid=search-submit]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=error-message]",
+      "もう使われています"
+     ]
+    },
+    {
+     "expect_count": [
+      "[data-testid=log-row]",
+      1
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=counter-turns]",
+      "残り4ターン"
+     ]
+    },
+    {
+     "screenshot": "duplicate"
+    },
+    {
+     "fill": [
+      "[data-testid=search-input]",
+      "n123456789 FOO"
+     ]
+    },
+    {
+     "click": "[data-testid=search-submit]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=error-message]",
+      "もう使われています"
+     ]
+    },
+    {
+     "expect_count": [
+      "[data-testid=log-row]",
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "title": "nomatch を入れる",
+   "steps": [
+    {
+     "fill": [
+      "[data-testid=search-input]",
+      "nomatch"
+     ]
+    },
+    {
+     "click": "[data-testid=search-submit]"
+    },
+    {
+     "wait": "[data-testid=result-reason]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=result-heading]",
+      "GAME OVER"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=result-reason]",
+      "条件に合う動画が見つかりませんでした"
+     ]
+    },
+    {
+     "screenshot": "game-over"
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "title": "slow を入れる。続けて error を入れる",
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": "[data-testid=mode-countdown]"
+    },
+    {
+     "wait": "[data-testid=setup-start]"
+    },
+    {
+     "click": "[data-testid=setup-start]"
+    },
+    {
+     "wait": "[data-testid=search-input]"
+    },
+    {
+     "fill": [
+      "[data-testid=search-input]",
+      "slow"
+     ]
+    },
+    {
+     "click": "[data-testid=search-submit]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=loading-message]",
+      "取得中"
+     ]
+    },
+    {
+     "expect_count": [
+      "[data-testid=search-submit]:disabled",
+      1
+     ]
+    },
+    {
+     "screenshot": "slow-loading"
+    },
+    {
+     "expect_count": [
+      "[data-testid=log-row]",
+      1
+     ]
+    },
+    {
+     "expect_count": [
+      "[data-testid=loading-message]",
+      0
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=counter-turns]",
+      "残り4ターン"
+     ]
+    },
+    {
+     "fill": [
+      "[data-testid=search-input]",
+      "error"
+     ]
+    },
+    {
+     "click": "[data-testid=search-submit]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=error-message]",
+      "取得に失敗しました"
+     ]
+    },
+    {
+     "expect_count": [
+      "[data-testid=retry-button]",
+      1
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=counter-turns]",
+      "残り4ターン"
+     ]
+    },
+    {
+     "expect_count": [
+      "[data-testid=log-row]",
+      1
+     ]
+    },
+    {
+     "screenshot": "error-retry"
+    }
+   ]
+  },
+  {
+   "id": "5a",
+   "title": "チャージ：上限を大きく超える値を足してバーストする",
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": "[data-testid=mode-charge]"
+    },
+    {
+     "wait": "[data-testid=setup-start]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=charge-rule]",
+      "クリア条件"
+     ]
+    },
+    {
+     "screenshot": "setup"
+    },
+    {
+     "click": "[data-testid=setup-start]"
+    },
+    {
+     "wait": "[data-testid=search-input]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=charge-total]",
+      "0"
+     ]
+    },
+    {
+     "screenshot": "play-start"
+    },
+    {
+     "fill": [
+      "[data-testid=search-input]",
+      "n99999999999"
+     ]
+    },
+    {
+     "click": "[data-testid=search-submit]"
+    },
+    {
+     "wait": "[data-testid=result-reason]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=result-heading]",
+      "GAME OVER"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=result-reason]",
+      "バースト"
+     ]
+    },
+    {
+     "screenshot": "burst"
+    }
+   ]
+  },
+  {
+   "id": "5b",
+   "title": "チャージ：小さい値を足していき、ターン切れになる",
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": "[data-testid=mode-charge]"
+    },
+    {
+     "wait": "[data-testid=setup-start]"
+    },
+    {
+     "click": "[data-testid=setup-start]"
+    },
+    {
+     "wait": "[data-testid=search-input]"
+    },
+    {
+     "fill": [
+      "[data-testid=search-input]",
+      "n20000000 w1"
+     ]
+    },
+    {
+     "click": "[data-testid=search-submit]"
+    },
+    {
+     "expect_count": [
+      "[data-testid=log-row]",
+      1
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=charge-total]",
+      "20,000,000"
+     ]
+    },
+    {
+     "fill": [
+      "[data-testid=search-input]",
+      "n20000000 w2"
+     ]
+    },
+    {
+     "click": "[data-testid=search-submit]"
+    },
+    {
+     "expect_count": [
+      "[data-testid=log-row]",
+      2
+     ]
+    },
+    {
+     "fill": [
+      "[data-testid=search-input]",
+      "n20000000 w3"
+     ]
+    },
+    {
+     "click": "[data-testid=search-submit]"
+    },
+    {
+     "expect_count": [
+      "[data-testid=log-row]",
+      3
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=charge-total]",
+      "60,000,000"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=charge-sub]",
+      "残り2ターン"
+     ]
+    },
+    {
+     "screenshot": "stacked"
+    },
+    {
+     "fill": [
+      "[data-testid=search-input]",
+      "n20000000 w4"
+     ]
+    },
+    {
+     "click": "[data-testid=search-submit]"
+    },
+    {
+     "expect_count": [
+      "[data-testid=log-row]",
+      4
+     ]
+    },
+    {
+     "fill": [
+      "[data-testid=search-input]",
+      "n20000000 w5"
+     ]
+    },
+    {
+     "click": "[data-testid=search-submit]"
+    },
+    {
+     "wait": "[data-testid=result-reason]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=result-heading]",
+      "GAME OVER"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=result-reason]",
+      "ターン切れ"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=result-detail]",
+      "合計 100,000,000 回"
+     ]
+    },
+    {
+     "screenshot": "out-of-turns"
+    }
+   ]
+  },
+  {
+   "id": 6,
+   "title": "ハイ＆ロー対戦を3人・「前より高く」で始め、1人が前より低い値を出す",
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": "[data-testid=mode-versus]"
+    },
+    {
+     "wait": "[data-testid=vs-setup]"
+    },
+    {
+     "click": "[data-testid=vs-dir-higher]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-player-count]",
+      "現在 2 人"
+     ]
+    },
+    {
+     "click": "[data-testid=vs-add-player]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-player-count]",
+      "現在 3 人"
+     ]
+    },
+    {
+     "fill": [
+      "[data-testid=vs-player-input-0]",
+      "Aki"
+     ]
+    },
+    {
+     "fill": [
+      "[data-testid=vs-player-input-1]",
+      "Ben"
+     ]
+    },
+    {
+     "fill": [
+      "[data-testid=vs-player-input-2]",
+      "Cho"
+     ]
+    },
+    {
+     "screenshot": "setup"
+    },
+    {
+     "click": "[data-testid=vs-start]"
+    },
+    {
+     "wait": "[data-testid=search-input]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-alive-count]",
+      "のこり 3 人 / 全 3 人"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-current-player]",
+      "Aki"
+     ]
+    },
+    {
+     "fill": [
+      "[data-testid=search-input]",
+      "n100000000 a"
+     ]
+    },
+    {
+     "click": "[data-testid=search-submit]"
+    },
+    {
+     "wait": "[data-testid=vs-handoff-go]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-handoff-result]",
+      "Aki"
+     ]
+    },
+    {
+     "click": "[data-testid=vs-handoff-go]"
+    },
+    {
+     "wait": "[data-testid=search-input]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-current-player]",
+      "Ben"
+     ]
+    },
+    {
+     "fill": [
+      "[data-testid=search-input]",
+      "n200000000 b"
+     ]
+    },
+    {
+     "click": "[data-testid=search-submit]"
+    },
+    {
+     "wait": "[data-testid=vs-handoff-go]"
+    },
+    {
+     "click": "[data-testid=vs-handoff-go]"
+    },
+    {
+     "wait": "[data-testid=search-input]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-current-player]",
+      "Cho"
+     ]
+    },
+    {
+     "fill": [
+      "[data-testid=search-input]",
+      "n150000000 c"
+     ]
+    },
+    {
+     "click": "[data-testid=search-submit]"
+    },
+    {
+     "wait": "[data-testid=vs-handoff-go]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-handoff-result]",
+      "Cho は脱落"
+     ]
+    },
+    {
+     "expect_count": [
+      "[data-testid=vs-log-out]",
+      1
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-alive-count]",
+      "のこり 2 人 / 全 3 人"
+     ]
+    },
+    {
+     "screenshot": "cho-out"
+    },
+    {
+     "click": "[data-testid=vs-handoff-go]"
+    },
+    {
+     "wait": "[data-testid=search-input]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-current-player]",
+      "Aki"
+     ]
+    },
+    {
+     "fill": [
+      "[data-testid=search-input]",
+      "n300000000 d"
+     ]
+    },
+    {
+     "click": "[data-testid=search-submit]"
+    },
+    {
+     "wait": "[data-testid=vs-handoff-go]"
+    },
+    {
+     "click": "[data-testid=vs-handoff-go]"
+    },
+    {
+     "wait": "[data-testid=search-input]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-current-player]",
+      "Ben"
+     ]
+    },
+    {
+     "screenshot": "skipped-cho"
+    },
+    {
+     "fill": [
+      "[data-testid=search-input]",
+      "n100000000 e"
+     ]
+    },
+    {
+     "click": "[data-testid=search-submit]"
+    },
+    {
+     "wait": "[data-testid=vs-winner-name]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-winner-name]",
+      "Aki の勝ち！"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-winner-reason]",
+      "最後の1人まで生き残った"
+     ]
+    },
+    {
+     "expect_count": [
+      "[data-testid=vs-log-out]",
+      2
+     ]
+    },
+    {
+     "screenshot": "winner"
+    }
+   ]
+  },
+  {
+   "id": 7,
+   "title": "「前より低く」で、10,000回未満になるワードを入れる",
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": "[data-testid=mode-versus]"
+    },
+    {
+     "wait": "[data-testid=vs-setup]"
+    },
+    {
+     "click": "[data-testid=vs-dir-lower]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-player-count]",
+      "現在 3 人"
+     ]
+    },
+    {
+     "click": "[data-testid=vs-start]"
+    },
+    {
+     "wait": "[data-testid=search-input]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-current-player]",
+      "Aki"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-counter]",
+      "お題より低く"
+     ]
+    },
+    {
+     "fill": [
+      "[data-testid=search-input]",
+      "n100000000 x"
+     ]
+    },
+    {
+     "click": "[data-testid=search-submit]"
+    },
+    {
+     "wait": "[data-testid=vs-handoff-go]"
+    },
+    {
+     "click": "[data-testid=vs-handoff-go]"
+    },
+    {
+     "wait": "[data-testid=search-input]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-current-player]",
+      "Ben"
+     ]
+    },
+    {
+     "screenshot": "before-zero"
+    },
+    {
+     "fill": [
+      "[data-testid=search-input]",
+      "n5000 y"
+     ]
+    },
+    {
+     "click": "[data-testid=search-submit]"
+    },
+    {
+     "wait": "[data-testid=vs-winner-name]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-winner-name]",
+      "Ben の勝ち！"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-winner-reason]",
+      "0ちょうどを出した"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-winner-reason]",
+      "残りの人数に関係なく"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=log]",
+      "実際の再生回数 5,000 回"
+     ]
+    },
+    {
+     "screenshot": "zero-win"
+    }
+   ]
+  },
+  {
+   "id": "8a",
+   "title": "カウントダウン：お題を引いた直後、お題の表示が万の位まで（やさしい・ふつう・むずかしい）",
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": "[data-testid=mode-countdown]"
+    },
+    {
+     "wait": "[data-testid=setup-start]"
+    },
+    {
+     "click": "[data-testid=level-easy]"
+    },
+    {
+     "click": "[data-testid=setup-start]"
+    },
+    {
+     "wait": "[data-testid=search-input]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=counter-target]",
+      "億"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=counter-value]",
+      "0,000"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万1"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万2"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万3"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万4"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万5"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万6"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万7"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万8"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万9"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万1"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万2"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万3"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万4"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万5"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万6"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万7"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万8"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万9"
+     ]
+    },
+    {
+     "screenshot": "topic-easy"
+    },
+    {
+     "goto": "/"
+    },
+    {
+     "click": "[data-testid=mode-countdown]"
+    },
+    {
+     "wait": "[data-testid=setup-start]"
+    },
+    {
+     "click": "[data-testid=level-normal]"
+    },
+    {
+     "click": "[data-testid=setup-start]"
+    },
+    {
+     "wait": "[data-testid=search-input]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=counter-target]",
+      "億"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=counter-value]",
+      "0,000"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万1"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万2"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万3"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万4"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万5"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万6"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万7"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万8"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万9"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万1"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万2"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万3"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万4"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万5"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万6"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万7"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万8"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万9"
+     ]
+    },
+    {
+     "screenshot": "topic-normal"
+    },
+    {
+     "goto": "/"
+    },
+    {
+     "click": "[data-testid=mode-countdown]"
+    },
+    {
+     "wait": "[data-testid=setup-start]"
+    },
+    {
+     "click": "[data-testid=level-hard]"
+    },
+    {
+     "click": "[data-testid=setup-start]"
+    },
+    {
+     "wait": "[data-testid=search-input]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=counter-target]",
+      "億"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=counter-value]",
+      "0,000"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万1"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万2"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万3"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万4"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万5"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万6"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万7"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万8"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-target]",
+      "万9"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万1"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万2"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万3"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万4"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万5"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万6"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万7"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万8"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=counter-sub]",
+      "万9"
+     ]
+    },
+    {
+     "screenshot": "topic-hard"
+    }
+   ]
+  },
+  {
+   "id": "8b",
+   "title": "チャージ：始めた直後、目標と上限の表示が万の位まで（やさしい・ふつう・むずかしい）",
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": "[data-testid=mode-charge]"
+    },
+    {
+     "wait": "[data-testid=setup-start]"
+    },
+    {
+     "click": "[data-testid=level-easy]"
+    },
+    {
+     "click": "[data-testid=setup-start]"
+    },
+    {
+     "wait": "[data-testid=search-input]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=charge-label]",
+      "上限"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=charge-label]",
+      "億"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万1"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万2"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万3"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万4"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万5"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万6"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万7"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万8"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万9"
+     ]
+    },
+    {
+     "screenshot": "target-easy"
+    },
+    {
+     "goto": "/"
+    },
+    {
+     "click": "[data-testid=mode-charge]"
+    },
+    {
+     "wait": "[data-testid=setup-start]"
+    },
+    {
+     "click": "[data-testid=level-normal]"
+    },
+    {
+     "click": "[data-testid=setup-start]"
+    },
+    {
+     "wait": "[data-testid=search-input]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=charge-label]",
+      "上限"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=charge-label]",
+      "億"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万1"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万2"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万3"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万4"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万5"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万6"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万7"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万8"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万9"
+     ]
+    },
+    {
+     "screenshot": "target-normal"
+    },
+    {
+     "goto": "/"
+    },
+    {
+     "click": "[data-testid=mode-charge]"
+    },
+    {
+     "wait": "[data-testid=setup-start]"
+    },
+    {
+     "click": "[data-testid=level-hard]"
+    },
+    {
+     "click": "[data-testid=setup-start]"
+    },
+    {
+     "wait": "[data-testid=search-input]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=charge-label]",
+      "上限"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=charge-label]",
+      "億"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万1"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万2"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万3"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万4"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万5"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万6"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万7"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万8"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=charge-label]",
+      "万9"
+     ]
+    },
+    {
+     "screenshot": "target-hard"
+    }
+   ]
+  },
+  {
+   "id": "8c",
+   "title": "対戦「前より低く」：始めた直後、最初のお題が万の位まで",
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": "[data-testid=mode-versus]"
+    },
+    {
+     "wait": "[data-testid=vs-setup]"
+    },
+    {
+     "click": "[data-testid=vs-dir-lower]"
+    },
+    {
+     "click": "[data-testid=vs-start]"
+    },
+    {
+     "wait": "[data-testid=search-input]"
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-counter]",
+      "お題より低く"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=vs-counter]",
+      "億"
+     ]
+    },
+    {
+     "expect_text": [
+      "[data-testid=counter-value]",
+      "0,000"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=vs-counter]",
+      "万1"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=vs-counter]",
+      "万2"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=vs-counter]",
+      "万3"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=vs-counter]",
+      "万4"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=vs-counter]",
+      "万5"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=vs-counter]",
+      "万6"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=vs-counter]",
+      "万7"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=vs-counter]",
+      "万8"
+     ]
+    },
+    {
+     "expect_no_text": [
+      "[data-testid=vs-counter]",
+      "万9"
+     ]
+    },
+    {
+     "screenshot": "first-topic"
+    }
+   ]
+  }
+ ]
+}
