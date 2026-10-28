@@ -41,6 +41,25 @@ YouTubeの再生回数を使った数字ゲーム。サーバーがYouTube Data 
 
 キャッシュはインスタンスごとのメモリ上にあるため、Cloud Run でインスタンスが入れ替わる（再起動、スケールイン、再デプロイ）とキャッシュは消える。複数のインスタンスが同時に動く場合も、インスタンス間でキャッシュは共有されない。そのため、入れ替わった直後は同じワードでも API を呼び直し、クォータを消費する。
 
+## YouTube Data API との突合
+
+使うエンドポイントのパラメータを、公式ドキュメントと突き合わせた表である（2026-10-28 に取得した [search.list](https://developers.google.com/youtube/v3/docs/search/list)・[videos.list](https://developers.google.com/youtube/v3/docs/videos/list) による）。制約は `server/internal/youtube/youtube_test.go` の偽サーバ（`strictAPI`）が再現し、違反すると 400 を返す。
+
+| エンドポイント | パラメータ | 値 | 根拠（ドキュメントの該当箇所） |
+|---|---|---|---|
+| search.list | `part` | `snippet` | 必須。「Set the parameter value to snippet」 |
+| search.list | `type` | `video` | 任意。既定は `video,channel,playlist` |
+| search.list | `order` | `viewCount` | 任意。許容値の1つ |
+| search.list | `q` | 検索ワード | 任意。検索語 |
+| search.list | `maxResults` | `50` | 任意。許容値は 0〜50、既定は 5 |
+| videos.list | `part` | `snippet,statistics` | 必須。取得するプロパティの指定 |
+| videos.list | `id` | 動画 ID のカンマ区切り（最大50件） | フィルタ（`id`・`chart`・`myRating` のいずれか1つ）。件数の上限はドキュメントの該当箇所に記載が無い。search.list の上限に合わせて50件以内にしている |
+| videos.list | `maxResults` | 送らない | 「`id` パラメータとの併用は未対応」。併用すると 400 になるため外した |
+| videos.list | `pageToken` | 送らない | 「`id` パラメータとの併用は未対応」 |
+
+- `x-goog-api-key` ヘッダで API キーを送る（URL に含めない）。
+- ドキュメントに載らない挙動（本物の API が実際に返す応答）は、このテストでは確かめない。本物の API での確認は PO が1回だけ行う。
+
 ## モックの特別なワード
 
 `USE_MOCK` を有効にすると、YouTube Data API を呼ばずにモックが応答する。検索ワード（正規化後）に次のワードを含めると、動作を再現できる。複数含めたときの優先順位は表の上から順。
