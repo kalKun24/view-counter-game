@@ -74,7 +74,15 @@ type errorBody struct {
 type Option func(*handlerConfig)
 
 type handlerConfig struct {
-	cache *cache.Cache[Result]
+	cache   *cache.Cache[Result]
+	limiter *RateLimiter
+	hops    int
+}
+
+// WithRateLimit limits /api/ requests per client IP with l. trustedHops is
+// the number of trusted proxies in front (see ClientIP).
+func WithRateLimit(l *RateLimiter, trustedHops int) Option {
+	return func(h *handlerConfig) { h.limiter, h.hops = l, trustedHops }
 }
 
 // WithCache makes the handler cache successful lookups (including "not
@@ -111,8 +119,8 @@ func NewHandler(c youtube.Client, log *slog.Logger, opts ...Option) http.Handler
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/views", func(w http.ResponseWriter, r *http.Request) {
 		q := r.URL.Query().Get("q")
-		if len(words.Split(q)) == 0 {
-			writeError(w, http.StatusBadRequest, "invalid_query", "q は必須です。検索ワードを指定してください。")
+		if msg := validateQuery(q); msg != "" {
+			writeError(w, http.StatusBadRequest, "invalid_query", msg)
 			return
 		}
 		ctx, cancel := context.WithTimeout(r.Context(), requestTimeout)
@@ -127,9 +135,7 @@ func NewHandler(c youtube.Client, log *slog.Logger, opts ...Option) http.Handler
 				writeError(w, http.StatusInternalServerError, "internal_error", "サーバ内部でエラーが発生しました。")
 				return
 			}
-			// youtube errors are sanitized and never contain the API key.
-			log.Error("youtube request failed", "err", err.Error())
-			writeError(w, http.StatusBadGateway, "upstream_error", "動画情報の取得に失敗しました。")
+			writeLookupError(w, log, err)
 			return
 		}
 		if !res.Found {
@@ -142,6 +148,9 @@ func NewHandler(c youtube.Client, log *slog.Logger, opts ...Option) http.Handler
 			Video:     &videoJSON{ID: res.Video.ID, Title: res.Video.Title},
 		})
 	})
+	if cfg.limiter != nil {
+		return rateLimit(mux, cfg.limiter, cfg.hops, log)
+	}
 	return mux
 }
 

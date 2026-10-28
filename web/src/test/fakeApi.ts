@@ -16,6 +16,12 @@ export const notFound = () => jsonResponse({ found: false });
 export const upstreamError = () =>
   jsonResponse({ error: { code: "upstream_error", message: "x" } }, 502);
 
+export const quotaExceeded = () =>
+  jsonResponse({ error: { code: "quota_exceeded", message: "x" } }, 503);
+
+export const gatewayTimeout = () =>
+  jsonResponse({ error: { code: "timeout", message: "x" } }, 504);
+
 export const invalidQuery = () =>
   jsonResponse({ error: { code: "invalid_query", message: "x" } }, 400);
 

@@ -8,10 +8,12 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // MaxResults is the number of search results requested.
@@ -39,6 +41,9 @@ type Client interface {
 type UpstreamError struct {
 	Status int    // HTTP status, 0 for transport errors
 	Reason string // e.g. "quotaExceeded"; empty when unknown
+	// Timeout is true for a transport error caused by a timeout of the HTTP
+	// client (not by the caller's context).
+	Timeout bool
 }
 
 func (e *UpstreamError) Error() string {
@@ -62,10 +67,17 @@ type HTTPClient struct {
 // "https://www.googleapis.com/youtube/v3"; tests pass a local server URL.
 func NewHTTPClient(apiKey, baseURL string, hc *http.Client) *HTTPClient {
 	if hc == nil {
-		hc = http.DefaultClient
+		hc = &http.Client{Timeout: defaultHTTPTimeout}
 	}
 	return &HTTPClient{apiKey: apiKey, baseURL: strings.TrimRight(baseURL, "/"), http: hc}
 }
+
+// DefaultHTTPTimeout is the timeout of the client used when none is given.
+const DefaultHTTPTimeout = 10 * time.Second
+
+// defaultHTTPTimeout is the value NewHTTPClient uses for a nil client. It is a
+// variable only so that tests can shorten it; production code never changes it.
+var defaultHTTPTimeout = DefaultHTTPTimeout
 
 // DefaultBaseURL is the production endpoint.
 const DefaultBaseURL = "https://www.googleapis.com/youtube/v3"
@@ -82,7 +94,8 @@ func (c *HTTPClient) get(ctx context.Context, path string, params url.Values, ou
 		if ctx.Err() != nil {
 			return ctx.Err()
 		}
-		return &UpstreamError{}
+		var ne net.Error
+		return &UpstreamError{Timeout: errors.As(err, &ne) && ne.Timeout()}
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(io.LimitReader(resp.Body, 4<<20))
@@ -182,6 +195,26 @@ func (c *HTTPClient) GetVideos(ctx context.Context, ids []string) ([]Video, erro
 		out = append(out, v)
 	}
 	return out, nil
+}
+
+// quotaReasons are the 403 reasons meaning the API quota is used up, per the
+// YouTube Data API error documentation: only quotaExceeded ("exceeded your
+// quota"), per the acceptance criteria. Every other 403 (dailyLimitExceeded,
+// rateLimitExceeded, userRateLimitExceeded, forbidden, ...) is a plain
+// upstream error.
+var quotaReasons = map[string]bool{"quotaExceeded": true}
+
+// IsQuotaExceeded reports whether err is an upstream 403 saying the quota is
+// exhausted.
+func IsQuotaExceeded(err error) bool {
+	var ue *UpstreamError
+	return errors.As(err, &ue) && ue.Status == http.StatusForbidden && quotaReasons[ue.Reason]
+}
+
+// IsTimeout reports whether err is a transport timeout of the HTTP client.
+func IsTimeout(err error) bool {
+	var ue *UpstreamError
+	return errors.As(err, &ue) && ue.Timeout
 }
 
 // IsUpstream reports whether err is an UpstreamError.

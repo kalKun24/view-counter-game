@@ -6,8 +6,8 @@ import { LEVELS, type LevelKey } from "./lib/levels";
 import {
   deferred,
   found,
+  gatewayTimeout,
   invalidQuery,
-  jsonResponse,
   mockFetch,
   notFound,
   requestedQueries,
@@ -422,12 +422,12 @@ describe("通信失敗（受け入れ基準 9）", () => {
     expect(queryTid("retry-button")).toBeNull();
   });
 
-  it("ネットワーク断・不正な応答・503 も通信失敗として扱う（ログに理由を残す）", async () => {
+  it("ネットワーク断・不正な応答・504 timeout も通信失敗として扱う（ログに理由を残す）", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     mockFetch(
       new TypeError("Failed to fetch"),
       new Response("not json", { status: 200 }),
-      jsonResponse({ error: { code: "quota_exceeded", message: "x" } }, 503),
+      gatewayTimeout(),
     );
     const user = setup();
     await startGame(user);

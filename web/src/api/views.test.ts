@@ -1,5 +1,14 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { invalidQuery, jsonResponse, found, mockFetch, notFound, upstreamError } from "../test/fakeApi";
+import {
+  found,
+  gatewayTimeout,
+  invalidQuery,
+  jsonResponse,
+  mockFetch,
+  notFound,
+  quotaExceeded,
+  upstreamError,
+} from "../test/fakeApi";
 import { fetchViews } from "./views";
 
 const signal = () => new AbortController().signal;
@@ -19,10 +28,25 @@ describe("fetchViews の分類", () => {
     mockFetch(invalidQuery());
     expect(await fetchViews("x", signal())).toEqual({ kind: "invalid" });
   });
-  it("502 / 503 は error", async () => {
-    mockFetch(upstreamError(), jsonResponse({ error: { code: "quota_exceeded" } }, 503));
+  it("502 / 504(timeout) は error", async () => {
+    mockFetch(upstreamError(), gatewayTimeout());
     expect(await fetchViews("x", signal())).toMatchObject({ kind: "error", reason: "http", status: 502 });
-    expect(await fetchViews("x", signal())).toMatchObject({ kind: "error", reason: "http", status: 503 });
+    expect(await fetchViews("x", signal())).toMatchObject({ kind: "error", reason: "http", status: 504 });
+  });
+  it("503 quota_exceeded は quota", async () => {
+    mockFetch(quotaExceeded());
+    expect(await fetchViews("x", signal())).toEqual({ kind: "quota" });
+  });
+  it("quota_exceeded 以外の 503（別 code・本文なし・JSON でない）は error", async () => {
+    mockFetch(
+      jsonResponse({ error: { code: "other" } }, 503),
+      new Response("", { status: 503 }),
+      new Response("<html>", { status: 503 }),
+      jsonResponse({ error: { code: "quota_exceeded" } }, 502),
+    );
+    for (const status of [503, 503, 503, 502]) {
+      expect(await fetchViews("x", signal())).toMatchObject({ kind: "error", reason: "http", status });
+    }
   });
   it("ネットワーク断は error(network)", async () => {
     mockFetch(new TypeError("Failed to fetch"));

@@ -8,6 +8,13 @@
 //	                 setting it together with YOUTUBE_API_KEY is a startup error
 //	CACHE_TTL        optional; cache lifetime in time.ParseDuration format (default 1h)
 //	PORT             optional; listen port (default 8080)
+//	RATE_LIMIT       optional; /api/ requests allowed per client IP per window, 1-100000 (default 20)
+//	RATE_LIMIT_WINDOW optional; window length, 1s-24h in time.ParseDuration format (default 1m)
+//	TRUSTED_PROXY_HOPS optional; how many X-Forwarded-For entries from the right were added
+//	                 by trusted proxies, 1-10 (default 1, the Cloud Run front end)
+//	                 For all three, a value that is set but empty or invalid is a startup error.
+//	                 The counters live in instance memory; with several instances the
+//	                 effective limit is multiplied by the instance count.
 package main
 
 import (
@@ -44,7 +51,7 @@ func newClient(getenv func(string) string, log *slog.Logger) (youtube.Client, er
 	if key == "" {
 		return nil, errors.New("YOUTUBE_API_KEY is not set (set USE_MOCK=1 to use the mock)")
 	}
-	return youtube.NewHTTPClient(key, youtube.DefaultBaseURL, &http.Client{Timeout: 10 * time.Second}), nil
+	return youtube.NewHTTPClient(key, youtube.DefaultBaseURL, &http.Client{Timeout: youtube.DefaultHTTPTimeout}), nil
 }
 
 const (
@@ -82,14 +89,21 @@ func main() {
 		log.Error("cannot start", "err", err.Error())
 		os.Exit(1)
 	}
+	lim, err := rateLimitConfig(os.LookupEnv)
+	if err != nil {
+		log.Error("cannot start", "err", err.Error())
+		os.Exit(1)
+	}
+	log.Info("rate limit", "limit", lim.Limit, "window", lim.Window.String(), "trustedProxyHops", lim.Hops)
 	log.Info("cache", "ttl", ttl.String(), "maxEntries", cacheMaxEntries)
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
 	srv := &http.Server{
-		Addr:              ":" + port,
-		Handler:           api.NewHandler(client, log, api.WithCache(cache.New[api.Result](ttl, cacheMaxEntries, time.Now))),
+		Addr: ":" + port,
+		Handler: api.NewHandler(client, log, api.WithCache(cache.New[api.Result](ttl, cacheMaxEntries, time.Now)),
+			api.WithRateLimit(api.NewRateLimiter(lim.Limit, lim.Window, time.Now), lim.Hops)),
 		ReadHeaderTimeout: 5 * time.Second,
 	}
 	log.Info("listening", "addr", srv.Addr)

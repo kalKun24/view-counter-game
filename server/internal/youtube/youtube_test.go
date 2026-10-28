@@ -4,12 +4,14 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 )
 
 const key = "TEST-API-KEY-should-never-leak"
@@ -73,6 +75,69 @@ func TestUpstreamErrorsAreSanitized(t *testing.T) {
 	}
 	if strings.Contains(err.Error(), key) {
 		t.Fatalf("leak: %v", err)
+	}
+}
+
+func TestIsQuotaExceeded(t *testing.T) {
+	tests := []struct {
+		err  error
+		want bool
+	}{
+		{&UpstreamError{Status: 403, Reason: "quotaExceeded"}, true},
+		{&UpstreamError{Status: 403, Reason: "dailyLimitExceeded"}, false},
+		{fmt.Errorf("wrapped: %w", &UpstreamError{Status: 403, Reason: "quotaExceeded"}), true},
+		{&UpstreamError{Status: 403, Reason: "rateLimitExceeded"}, false},
+		{&UpstreamError{Status: 403}, false},
+		{&UpstreamError{Status: 400, Reason: "quotaExceeded"}, false},
+		{errors.New("other"), false},
+		{nil, false},
+	}
+	for _, tt := range tests {
+		if got := IsQuotaExceeded(tt.err); got != tt.want {
+			t.Errorf("%v: got %v", tt.err, got)
+		}
+	}
+}
+
+func TestNilHTTPClientHasTimeout(t *testing.T) {
+	c := NewHTTPClient(key, "http://example.invalid", nil)
+	if c.http == http.DefaultClient || c.http.Timeout != DefaultHTTPTimeout {
+		t.Fatalf("%+v", c.http)
+	}
+}
+
+func TestDefaultHTTPTimeoutIsTenSeconds(t *testing.T) {
+	if DefaultHTTPTimeout != 10*time.Second || defaultHTTPTimeout != DefaultHTTPTimeout {
+		t.Fatalf("%v %v", DefaultHTTPTimeout, defaultHTTPTimeout)
+	}
+}
+
+// TestNilHTTPClientTimeoutOnHangingServer shortens the default timeout so the
+// test does not wait the real 10 seconds.
+func TestNilHTTPClientTimeoutOnHangingServer(t *testing.T) {
+	old := defaultHTTPTimeout
+	defaultHTTPTimeout = 50 * time.Millisecond
+	t.Cleanup(func() { defaultHTTPTimeout = old })
+
+	release := make(chan struct{})
+	ts := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) { <-release }))
+	t.Cleanup(ts.Close)
+	t.Cleanup(func() { close(release) }) // runs before ts.Close
+
+	c := NewHTTPClient(key, ts.URL, nil)
+	start := time.Now()
+	_, err := c.SearchVideoIDs(context.Background(), "q")
+	if err == nil {
+		t.Fatal("expected a timeout error")
+	}
+	if !IsTimeout(err) || !IsUpstream(err) {
+		t.Fatalf("not an upstream timeout: %v", err)
+	}
+	if strings.Contains(err.Error(), key) {
+		t.Fatalf("key leaked: %v", err)
+	}
+	if d := time.Since(start); d > 5*time.Second {
+		t.Fatalf("took %v", d)
 	}
 }
 

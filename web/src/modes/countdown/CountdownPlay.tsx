@@ -89,7 +89,7 @@ export function CountdownPlay({ title, level, target, onFinish, onQuit }: Props)
           />
         }
       />
-      <SearchForm isUsed={isUsed} onResult={onResult} />
+      <SearchForm isUsed={isUsed} onResult={onResult} onHome={onQuit} />
       <p className="sr-only" role="status">
         {announce}
       </p>
