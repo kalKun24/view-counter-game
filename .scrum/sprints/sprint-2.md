@@ -7,7 +7,7 @@
 ## 対象 PBI
 | PBI | points | ui | 担当構成 | 状態 | 差し戻し | ブランチ | 作業ディレクトリ |
 |---|---|---|---|---|---|---|---|
-| #3 | 5 | yes | ui-designer → golang-pro（モックの追加）→ react-specialist | todo | 0 | | |
+| #3 | 5 | yes | ui-designer → golang-pro（モックの追加）→ react-specialist | dev | 0 | scrum/3 | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-a2f662f90a14ba8b6 |
 | #4 | 2 | yes | ui-designer → react-specialist | todo | 0 | | |
 | #5 | 3 | yes | ui-designer → react-specialist | todo | 0 | | |
 
@@ -34,9 +34,52 @@
 ## Agent 実行ログ
 | PBI | Agent | 目的 | tokens | tool_uses | 所要時間 |
 |---|---|---|---|---|---|
+| #4 | ui-designer | design | 41110 | 11 | 66s |
+| #3 | golang-pro | implement | 36175 | 33 | 97s |
+| #5 | ui-designer | design | 46124 | 10 | 102s |
+| #3 | ui-designer | design | 55301 | 10 | 163s |
 
 ## 記録
 ### planning
 - PO が計画を承認した。
 - 改善 PBI #15〜#18 は `priority:6` に置いた（#7 より前）。
 - DoD 変更案（`-race` と `govulncheck` の結果をレビューの報告に載せる）：見送り。#15 の完了後のスプリント計画で改めて採否を決める（#15 にコメントで記録）。
+
+### #4 design（ui-designer）
+- 結果：done。`.scrum/designs/4.md`。チャージ固有の部分だけを定め、共通部品は #3 の仕様を参照する。
+- assumptions
+  - 3.md が未作成だったため、共通部品は試作版と同じ見た目で #3 が定めると想定した。食い違えば #3 を優先する。
+  - 切り捨て後が 0 の再生回数も有効な入力で、ターンを消費する。デモ台本5のワードは 10,000 以上の値にする必要がある。
+  - 上限が小数になりうるため、整数どうしの比較（許容幅を千分率で持つ）を勧めた。
+  - 該当なしで終わるときは、そのターンを履歴に入れない。
+
+### #3 implement 前半（golang-pro）
+- 結果：done。作業ディレクトリ `/home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-a2f662f90a14ba8b6`、`scrum/3`、コミット c593291。モックに `n<数字>` のワードを追加（`n0`、`n5000` など）。API 契約は変更なし。README に「モックの特別なワード」の表を追加。
+- assumptions
+  - 優先順位は error > quota > nomatch > slow > `n<数字>`。
+  - `n` ワードが複数あれば、正規化後のワード集合（辞書順）で最初に int64 に収まるもの。合計は取らない。
+  - ワード全体が「`n` + 数字」のときだけ対象。
+- T1-1 チェックリスト：6項目すべてに回答あり（4 は対応、他は該当なし）。
+- unresolved：なし。`-race` は cgo 無効のため未実行。
+
+### #5 design（ui-designer）
+- 結果：done。`.scrum/designs/5.md`。新しい部品は生存者一覧、手番の引き継ぎカード（`vs-handoff`）、勝者表示の3つ。脱落は `▶`・取り消し線・「脱落」の文字で示し、色だけに頼らない。
+- assumptions
+  - 3.md が未作成だったため、共通部品は想定で書いた。食い違えば 3.md を優先する。
+  - 引き継ぎカードは試作版に無く新規。成功・脱落でゲームが続くときに出し、1手ごとに1タップ増える（品質＝遊び心地を優先）。
+  - 判定は「負け」を先に、次に「0ちょうど」を見る。「前より高く」の2手目以降で0を出すと負け、最初の1手で0なら勝ち。
+  - 「前より低く」の最初のお題は切り捨てずに比べる。エラー時はワードを使用済みにしない。
+- unresolved：3.md との突合が未了。
+- **PO に示す事項（レビュー）**：(1) 引き継ぎカードで1手ごとにタップが1回増える（代案：脱落時だけ出す）。(2) 「前より高く」で最初の1手が0ちょうどならその場で勝ちになる。
+
+### #3 design（ui-designer）
+- 結果：done。`.scrum/designs/3.md`。ホーム・難易度設定・プレイ・結果の4画面。共通部品（AppShell、ScreenTop、ModeList、DifficultyPicker、Counter、SearchForm、FetchStatus、WordLog、ResultBanner、取得フック、LEVELS/jp/comma/normWords）とモード固有を分けた。未実装のモードは `enabledModes` で「準備中」にする。`data-testid` を画面ごとに定義。
+- assumptions
+  - nomatch は履歴にも使用済みにも入れず、ターンも増やさず、その場で GAME OVER。
+  - 重複チェックは API を呼ぶ前に行う（クォータ節約）。
+  - 正規化は試作版の `normWords` に NFKC を足す（全角英数の同一視のため）。
+  - 試作版から変えた見た目：ライトモードのオレンジを #c2410c にする（コントラスト AA）、入力文字 16px（iOS の自動ズーム防止）、ボタンと入力の高さ 44px 以上。
+  - fetch のタイムアウト 15秒。503 は #10・#11 まで他の 5xx と同じ表示。
+  - 切り捨て値が 0 の行は `−0` と表示し、ターンを消費する。
+  - 動画タイトルは React のテキストノードで表示し、`unicode-bidi:isolate` で閉じ込める。
+- #3 の後半（フロントエンド）を react-specialist に依頼した（同じ作業ディレクトリ・`scrum/3`）。
