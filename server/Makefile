@@ -1,6 +1,6 @@
 # 検証環境。ホストに cgo・gcc・govulncheck が無くても、Docker で同じ結果を得る。
 # イメージと govulncheck のバージョンは固定する（latest を使わない）。
-GO_IMAGE := golang:1.26.9-bookworm
+GO_IMAGE := golang:1.26.10-bookworm
 GOVULNCHECK_VERSION := v1.9.0
 
 DOCKER_RUN := docker run --rm -v "$(CURDIR)":/src:ro -w /src
