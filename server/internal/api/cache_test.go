@@ -168,9 +168,13 @@ func TestUpstreamErrorsAreNotCached(t *testing.T) {
 			c := foundClient()
 			c.err.Store(&e)
 			h, logs, _ := newCachedHandler(c, time.Now, time.Hour, 10)
+			want := 502
+			if name == "quotaExceeded" {
+				want = 503
+			}
 			for i := 0; i < 2; i++ {
-				if rec := get(h, "cat"); rec.Code != 502 {
-					t.Fatalf("status %d", rec.Code)
+				if rec := get(h, "cat"); rec.Code != want {
+					t.Fatalf("status %d, want %d", rec.Code, want)
 				}
 			}
 			if c.searches.Load() != 2 {

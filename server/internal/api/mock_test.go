@@ -35,9 +35,13 @@ func TestHandlerWithMock(t *testing.T) {
 	if code, body := get("nomatch"); code != 200 || !strings.Contains(body, `"found":false`) {
 		t.Errorf("nomatch: %d %s", code, body)
 	}
-	for _, q := range []string{"quota", "error"} {
-		if code, body := get(q); code != http.StatusBadGateway || !strings.Contains(body, "upstream_error") {
-			t.Errorf("%s: %d %s", q, code, body)
+	if code, body := get("error"); code != http.StatusBadGateway || !strings.Contains(body, "upstream_error") {
+		t.Errorf("error: %d %s", code, body)
+	}
+	// Twice: the second answer must be the same (nothing cached here either).
+	for i := 0; i < 2; i++ {
+		if code, body := get("quota"); code != http.StatusServiceUnavailable || !strings.Contains(body, `"code":"quota_exceeded"`) {
+			t.Errorf("quota: %d %s", code, body)
 		}
 	}
 }
