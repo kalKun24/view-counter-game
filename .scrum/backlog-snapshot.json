@@ -1,157 +1,24 @@
 {
- "updated_at": "2026-10-28T20:17:30+09:00",
+ "updated_at": "2026-10-28T21:38:32+09:00",
  "items": [
-  {
-   "id": "#1",
-   "title": "検索ワードから最大再生回数を返す API",
-   "status": "done",
-   "points": 5,
-   "ui": "no",
-   "url": "https://github.com/kalKun24/view-counter-game/issues/1"
-  },
-  {
-   "id": "#2",
-   "title": "API キーが無いときの開発用モック",
-   "status": "done",
-   "points": 2,
-   "ui": "no",
-   "url": "https://github.com/kalKun24/view-counter-game/issues/2"
-  },
-  {
-   "id": "#6",
-   "title": "検索結果のキャッシュ",
-   "status": "done",
-   "points": 3,
-   "ui": "no",
-   "url": "https://github.com/kalKun24/view-counter-game/issues/6"
-  },
-  {
-   "id": "#3",
-   "title": "カウントダウンモード",
-   "status": "done",
-   "points": 5,
-   "ui": "yes",
-   "url": "https://github.com/kalKun24/view-counter-game/issues/3"
-  },
-  {
-   "id": "#4",
-   "title": "チャージモード",
-   "status": "done",
-   "points": 2,
-   "ui": "yes",
-   "url": "https://github.com/kalKun24/view-counter-game/issues/4"
-  },
-  {
-   "id": "#5",
-   "title": "ハイ＆ロー対戦",
-   "status": "done",
-   "points": 3,
-   "ui": "yes",
-   "url": "https://github.com/kalKun24/view-counter-game/issues/5"
-  },
-  {
-   "id": "#15",
-   "title": "検証環境の整備（-race と govulncheck）",
-   "status": "done",
-   "points": 3,
-   "ui": "no",
-   "url": "https://github.com/kalKun24/view-counter-game/issues/15"
-  },
-  {
-   "id": "#16",
-   "title": "videos.list の併用不可パラメータを外す",
-   "status": "done",
-   "points": 2,
-   "ui": "no",
-   "url": "https://github.com/kalKun24/view-counter-game/issues/16"
-  },
-  {
-   "id": "#17",
-   "title": "キャッシュの読み込み処理の panic を回復する",
-   "status": "done",
-   "points": 3,
-   "ui": "no",
-   "url": "https://github.com/kalKun24/view-counter-game/issues/17"
-  },
-  {
-   "id": "#18",
-   "title": "USE_MOCK と API キーの同時設定を検出する",
-   "status": "done",
-   "points": 1,
-   "ui": "no",
-   "url": "https://github.com/kalKun24/view-counter-game/issues/18"
-  },
-  {
-   "id": "#7",
-   "title": "連打への対策",
-   "status": "ready",
-   "points": 3,
-   "ui": "no",
-   "url": "https://github.com/kalKun24/view-counter-game/issues/7"
-  },
-  {
-   "id": "#10",
-   "title": "クォータ切れの応答（サーバー）",
-   "status": "ready",
-   "points": 2,
-   "ui": "no",
-   "url": "https://github.com/kalKun24/view-counter-game/issues/10"
-  },
-  {
-   "id": "#11",
-   "title": "クォータ切れの表示（画面）",
-   "status": "ready",
-   "points": 1,
-   "ui": "yes",
-   "url": "https://github.com/kalKun24/view-counter-game/issues/11"
-  },
-  {
-   "id": "#12",
-   "title": "コンテナ化（静的配信と Dockerfile）",
-   "status": "ready",
-   "points": 3,
-   "ui": "no",
-   "url": "https://github.com/kalKun24/view-counter-game/issues/12"
-  },
-  {
-   "id": "#13",
-   "title": "Cloud Run への公開",
-   "status": "ready",
-   "points": 3,
-   "ui": "no",
-   "url": "https://github.com/kalKun24/view-counter-game/issues/13"
-  },
-  {
-   "id": "#20",
-   "title": "表示する文字列を安全にする",
-   "status": "new",
-   "points": null,
-   "ui": "yes",
-   "url": "https://github.com/kalKun24/view-counter-game/issues/20"
-  },
-  {
-   "id": "#21",
-   "title": "検出した脆弱性を修正する（x/text と Go のツールチェーン）",
-   "status": "new",
-   "points": null,
-   "ui": "no",
-   "url": "https://github.com/kalKun24/view-counter-game/issues/21"
-  },
-  {
-   "id": "#22",
-   "title": "YouTube クライアントの既定にタイムアウトを付ける",
-   "status": "new",
-   "points": null,
-   "ui": "no",
-   "url": "https://github.com/kalKun24/view-counter-game/issues/22"
-  },
-  {
-   "id": "#23",
-   "title": "キャッシュ読み込みの異常終了を堅牢にする（Goexit とログ）",
-   "status": "new",
-   "points": null,
-   "ui": "no",
-   "url": "https://github.com/kalKun24/view-counter-game/issues/23"
-  }
+  {"id": "#1", "title": "検索ワードから最大再生回数を返す API", "status": "done", "points": 5, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/1"},
+  {"id": "#2", "title": "API キーが無いときの開発用モック", "status": "done", "points": 2, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/2"},
+  {"id": "#6", "title": "検索結果のキャッシュ", "status": "done", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/6"},
+  {"id": "#3", "title": "カウントダウンモード", "status": "done", "points": 5, "ui": "yes", "url": "https://github.com/kalKun24/view-counter-game/issues/3"},
+  {"id": "#4", "title": "チャージモード", "status": "done", "points": 2, "ui": "yes", "url": "https://github.com/kalKun24/view-counter-game/issues/4"},
+  {"id": "#5", "title": "ハイ＆ロー対戦", "status": "done", "points": 3, "ui": "yes", "url": "https://github.com/kalKun24/view-counter-game/issues/5"},
+  {"id": "#15", "title": "検証環境の整備（-race と govulncheck）", "status": "done", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/15"},
+  {"id": "#16", "title": "videos.list の併用不可パラメータを外す", "status": "done", "points": 2, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/16"},
+  {"id": "#17", "title": "キャッシュの読み込み処理の panic を回復する", "status": "done", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/17"},
+  {"id": "#18", "title": "USE_MOCK と API キーの同時設定を検出する", "status": "done", "points": 1, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/18"},
+  {"id": "#21", "title": "検出した脆弱性を修正する（x/text と Go のツールチェーン）", "status": "sprint", "points": 2, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/21"},
+  {"id": "#7", "title": "連打への対策", "status": "sprint", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/7"},
+  {"id": "#10", "title": "クォータ切れの応答（サーバー）", "status": "sprint", "points": 2, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/10"},
+  {"id": "#11", "title": "クォータ切れの表示（画面）", "status": "sprint", "points": 1, "ui": "yes", "url": "https://github.com/kalKun24/view-counter-game/issues/11"},
+  {"id": "#22", "title": "YouTube クライアントの既定にタイムアウトを付ける", "status": "sprint", "points": 1, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/22"},
+  {"id": "#23", "title": "キャッシュ読み込みの異常終了を堅牢にする（Goexit とログ）", "status": "ready", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/23"},
+  {"id": "#20", "title": "表示する文字列を安全にする", "status": "ready", "points": 3, "ui": "yes", "url": "https://github.com/kalKun24/view-counter-game/issues/20"},
+  {"id": "#12", "title": "コンテナ化（静的配信と Dockerfile）", "status": "ready", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/12"},
+  {"id": "#13", "title": "Cloud Run への公開", "status": "ready", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/13"}
  ]
 }
