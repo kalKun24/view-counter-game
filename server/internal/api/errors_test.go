@@ -29,7 +29,7 @@ func TestQuotaVersusOtherUpstreamErrors(t *testing.T) {
 		wantLog    string
 	}{
 		{"quotaExceeded", 403, "quotaExceeded", 503, "quota_exceeded", "youtube quota exceeded"},
-		{"dailyLimitExceeded", 403, "dailyLimitExceeded", 503, "quota_exceeded", "youtube quota exceeded"},
+		{"dailyLimitExceeded", 403, "dailyLimitExceeded", 502, "upstream_error", "youtube request failed"},
 		{"rateLimitExceeded", 403, "rateLimitExceeded", 502, "upstream_error", "youtube request failed"},
 		{"userRateLimitExceeded", 403, "userRateLimitExceeded", 502, "upstream_error", "youtube request failed"},
 		{"forbidden", 403, "forbidden", 502, "upstream_error", "youtube request failed"},

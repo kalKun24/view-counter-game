@@ -83,7 +83,7 @@ func TestIsQuotaExceeded(t *testing.T) {
 		want bool
 	}{
 		{&UpstreamError{Status: 403, Reason: "quotaExceeded"}, true},
-		{&UpstreamError{Status: 403, Reason: "dailyLimitExceeded"}, true},
+		{&UpstreamError{Status: 403, Reason: "dailyLimitExceeded"}, false},
 		{fmt.Errorf("wrapped: %w", &UpstreamError{Status: 403, Reason: "quotaExceeded"}), true},
 		{&UpstreamError{Status: 403, Reason: "rateLimitExceeded"}, false},
 		{&UpstreamError{Status: 403}, false},

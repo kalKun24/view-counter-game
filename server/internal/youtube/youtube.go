@@ -194,10 +194,11 @@ func (c *HTTPClient) GetVideos(ctx context.Context, ids []string) ([]Video, erro
 }
 
 // quotaReasons are the 403 reasons meaning the API quota is used up, per the
-// YouTube Data API error documentation: quotaExceeded ("exceeded your quota")
-// and dailyLimitExceeded ("daily limit"). rateLimitExceeded and
-// userRateLimitExceeded are short-term rate limits, not quota exhaustion.
-var quotaReasons = map[string]bool{"quotaExceeded": true, "dailyLimitExceeded": true}
+// YouTube Data API error documentation: only quotaExceeded ("exceeded your
+// quota"), per the acceptance criteria. Every other 403 (dailyLimitExceeded,
+// rateLimitExceeded, userRateLimitExceeded, forbidden, ...) is a plain
+// upstream error.
+var quotaReasons = map[string]bool{"quotaExceeded": true}
 
 // IsQuotaExceeded reports whether err is an upstream 403 saying the quota is
 // exhausted.
