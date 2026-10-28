@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -98,5 +99,87 @@ func TestKeyNotInLogs(t *testing.T) {
 	log.Error("youtube request failed", "err", err.Error())
 	if strings.Contains(logs.String(), key) || strings.Contains(logs.String(), "raw upstream") {
 		t.Fatalf("log leaks: %s", logs.String())
+	}
+}
+
+// strictAPI is a fake server that rejects requests the real API rejects,
+// according to the official docs (see README "YouTube Data API との突合").
+// It records every request so tests can inspect the parameters.
+type strictAPI struct {
+	reqs []string
+}
+
+func (s *strictAPI) handler(w http.ResponseWriter, r *http.Request) {
+	s.reqs = append(s.reqs, r.URL.String())
+	q := r.URL.Query()
+	bad := func(msg string) {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte(`{"error":{"errors":[{"reason":"` + msg + `"}]}}`))
+	}
+	switch r.URL.Path {
+	case "/videos":
+		if q.Get("part") == "" {
+			bad("missingRequiredParameter")
+			return
+		}
+		// id cannot be combined with maxResults or pageToken
+		// (docs: "not supported in conjunction with the id parameter").
+		if q.Get("id") != "" && (q.Has("maxResults") || q.Has("pageToken")) {
+			bad("incompatibleParameters")
+			return
+		}
+		_, _ = w.Write([]byte(`{"items":[]}`))
+	case "/search":
+		if q.Get("part") != "snippet" {
+			bad("badPart")
+			return
+		}
+		if mr := q.Get("maxResults"); mr != "" {
+			if n, err := strconv.Atoi(mr); err != nil || n < 0 || n > 50 {
+				bad("badMaxResults")
+				return
+			}
+		}
+		_, _ = w.Write([]byte(`{"items":[]}`))
+	default:
+		http.NotFound(w, r)
+	}
+}
+
+func TestVideosListSendsNoIncompatibleParams(t *testing.T) {
+	api := &strictAPI{}
+	c := newServer(t, api.handler)
+	ids := make([]string, MaxResults)
+	for i := range ids {
+		ids[i] = "v" + strconv.Itoa(i)
+	}
+	if _, err := c.GetVideos(context.Background(), ids); err != nil {
+		t.Fatalf("videos.list rejected by strict fake: %v", err)
+	}
+	if len(api.reqs) != 1 || strings.Contains(api.reqs[0], "maxResults") || strings.Contains(api.reqs[0], "pageToken") {
+		t.Fatalf("requests: %v", api.reqs)
+	}
+}
+
+func TestSearchListSatisfiesDocumentedConstraints(t *testing.T) {
+	api := &strictAPI{}
+	c := newServer(t, api.handler)
+	if _, err := c.SearchVideoIDs(context.Background(), "x"); err != nil {
+		t.Fatalf("search.list rejected by strict fake: %v", err)
+	}
+}
+
+// The strict fake itself must reproduce the old failure (maxResults with id).
+func TestStrictFakeRejectsIdWithMaxResults(t *testing.T) {
+	api := &strictAPI{}
+	ts := httptest.NewServer(http.HandlerFunc(api.handler))
+	t.Cleanup(ts.Close)
+	resp, err := http.Get(ts.URL + "/videos?part=snippet&id=a&maxResults=50")
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Fatalf("status %d", resp.StatusCode)
 	}
 }

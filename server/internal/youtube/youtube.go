@@ -125,7 +125,7 @@ func sanitizeReason(s string) string {
 // SearchVideoIDs implements Client.
 func (c *HTTPClient) SearchVideoIDs(ctx context.Context, query string) ([]string, error) {
 	p := url.Values{}
-	p.Set("part", "id")
+	p.Set("part", "snippet")
 	p.Set("type", "video")
 	p.Set("order", "viewCount")
 	p.Set("maxResults", strconv.Itoa(MaxResults))
@@ -157,7 +157,6 @@ func (c *HTTPClient) GetVideos(ctx context.Context, ids []string) ([]Video, erro
 	p := url.Values{}
 	p.Set("part", "snippet,statistics")
 	p.Set("id", strings.Join(ids, ","))
-	p.Set("maxResults", strconv.Itoa(MaxResults))
 	var res struct {
 		Items []struct {
 			ID      string `json:"id"`
