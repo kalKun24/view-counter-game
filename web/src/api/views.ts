@@ -8,6 +8,7 @@ export type ViewsResult =
   | { kind: "found"; viewCount: number; title: string; videoId: string }
   | { kind: "nomatch" }
   | { kind: "invalid" }
+  | { kind: "quota" }
   | { kind: "error"; reason: ErrorReason; status?: number }
   | { kind: "cancelled" };
 
@@ -32,6 +33,13 @@ async function classify(res: Response): Promise<ViewsResult> {
     return code === "invalid_query"
       ? { kind: "invalid" }
       : { kind: "error", reason: "http", status: res.status };
+  }
+  if (res.status === 503) {
+    // 503 のうち quota_exceeded だけをクォータ切れとする。それ以外は通信失敗のまま。
+    const body = await readJson(res);
+    const code = isRecord(body) && isRecord(body.error) ? body.error.code : undefined;
+    if (code === "quota_exceeded") return { kind: "quota" };
+    return { kind: "error", reason: "http", status: res.status };
   }
   if (!res.ok) return { kind: "error", reason: "http", status: res.status };
 
