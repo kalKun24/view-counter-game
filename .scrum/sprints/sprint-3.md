@@ -1,5 +1,5 @@
 # Sprint 3
-- phase: review
+- phase: retrospective
 - goal: PO が1コマンドで、競合検出（`-race`）と脆弱性の検査が動くこと、キャッシュの読み込みの panic や設定の矛盾でサーバが落ちず自分で止まること、`videos.list` に併用できないパラメータを送らないことを確かめられる。
 - started: 2026-10-28T19:25:07+09:00
 - base_branch: main
@@ -7,10 +7,10 @@
 ## 対象 PBI
 | PBI | points | ui | 担当構成 | 状態 | 差し戻し | ブランチ | 作業ディレクトリ |
 |---|---|---|---|---|---|---|---|
-| #15 | 3 | no | golang-pro | approved | 0 | scrum/15 | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-a07d6fbbdcbed3644 |
-| #16 | 2 | no | golang-pro | approved | 0 | scrum/16 | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-a92c4662cf8ecbbcd |
-| #18 | 1 | no | golang-pro | approved | 1 | scrum/18 | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-ad80f79ac6d00ff20 |
-| #17 | 3 | no | golang-pro | approved | 0 | scrum/17（分岐元 scrum/15） | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-ad114720f784bf6cd |
+| #15 | 3 | no | golang-pro | accepted | 0 | scrum/15 | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-a07d6fbbdcbed3644 |
+| #16 | 2 | no | golang-pro | accepted | 0 | scrum/16 | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-a92c4662cf8ecbbcd |
+| #18 | 1 | no | golang-pro | accepted | 1 | scrum/18 | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-ad80f79ac6d00ff20 |
+| #17 | 3 | no | golang-pro | accepted | 0 | scrum/17（分岐元 scrum/15） | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-ad114720f784bf6cd |
 
 ## デモ台本
 | # | PO の操作 | 期待する結果 | PBI |
@@ -172,3 +172,14 @@
 - 作業ディレクトリ：/home/kal24hi/Projects/view-counter-game/.claude/worktrees/sprint-3
 - デモの場所：/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-3/（README.md、demo.sh、rehearsal.md）。golang-pro が作り、スクラムマスターが実行前に demo.sh を読んで確かめた。
 - リハーサル：1回目で5場面すべて一致。場面2の `make vuln` は、#21 の検出2件が出る（想定どおり）。
+
+### review
+- PO がデモ1回目を受け入れた。PR #24 を `--merge` でマージした（マージコミット 49439e2）。#15〜#18 は `Closes` で閉じ、`status:sprint` を外した。
+- main でのテスト：Go 5パッケージ 46件 pass、web 9ファイル 124件 pass（合計170件）。
+- PO に示した事項（#21 の優先度と #13 の前提、#22・#23 の登録、#16 の `part=snippet`、DoD 変更案）は、PO から個別の返答が無かった。#21 の優先度と DoD 変更案は、次のスプリント計画で聞く。
+- 後片付け：統合ブランチと #15〜#18 の worktree・ブランチ、`worktree-agent-*` のブランチを削除した。
+
+## デモの判定
+| 回 | 日時 | 判定 | PO の指摘 | 原因の PBI | 対応 |
+|---|---|---|---|---|---|
+| 1 | 2026-10-28T20:17:39+09:00 | 受け入れ | — | — | マージした |

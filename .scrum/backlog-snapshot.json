@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-28T20:10:00+09:00",
+ "updated_at": "2026-10-28T20:17:30+09:00",
  "items": [
   {
    "id": "#1",
@@ -52,7 +52,7 @@
   {
    "id": "#15",
    "title": "検証環境の整備（-race と govulncheck）",
-   "status": "sprint",
+   "status": "done",
    "points": 3,
    "ui": "no",
    "url": "https://github.com/kalKun24/view-counter-game/issues/15"
@@ -60,7 +60,7 @@
   {
    "id": "#16",
    "title": "videos.list の併用不可パラメータを外す",
-   "status": "sprint",
+   "status": "done",
    "points": 2,
    "ui": "no",
    "url": "https://github.com/kalKun24/view-counter-game/issues/16"
@@ -68,7 +68,7 @@
   {
    "id": "#17",
    "title": "キャッシュの読み込み処理の panic を回復する",
-   "status": "sprint",
+   "status": "done",
    "points": 3,
    "ui": "no",
    "url": "https://github.com/kalKun24/view-counter-game/issues/17"
@@ -76,7 +76,7 @@
   {
    "id": "#18",
    "title": "USE_MOCK と API キーの同時設定を検出する",
-   "status": "sprint",
+   "status": "done",
    "points": 1,
    "ui": "no",
    "url": "https://github.com/kalKun24/view-counter-game/issues/18"
