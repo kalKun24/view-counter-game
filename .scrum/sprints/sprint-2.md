@@ -1,5 +1,5 @@
 # Sprint 2
-- phase: review
+- phase: retrospective
 - goal: PO がスマホ幅のブラウザで、モックを相手に、カウントダウン・チャージ・ハイ＆ロー対戦の3モードを最後まで遊べる。判定には10,000未満を切り捨てた値を使い、画面には正しい再生回数も注釈として出る。
 - started: 2026-10-28T15:17:50+09:00
 - base_branch: main
@@ -7,9 +7,9 @@
 ## 対象 PBI
 | PBI | points | ui | 担当構成 | 状態 | 差し戻し | ブランチ | 作業ディレクトリ |
 |---|---|---|---|---|---|---|---|
-| #3 | 5 | yes | ui-designer → golang-pro（モックの追加）→ react-specialist | approved | 1 | scrum/3 | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-a2f662f90a14ba8b6 |
-| #4 | 2 | yes | ui-designer → react-specialist | approved | 1 | scrum/4 | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-ae188a3b7dc57a129 |
-| #5 | 3 | yes | ui-designer → react-specialist | approved | 1 | scrum/5 | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-ae4331f11c9c2f8e7 |
+| #3 | 5 | yes | ui-designer → golang-pro（モックの追加）→ react-specialist | accepted | 1 | scrum/3 | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-a2f662f90a14ba8b6 |
+| #4 | 2 | yes | ui-designer → react-specialist | accepted | 1 | scrum/4 | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-ae188a3b7dc57a129 |
+| #5 | 3 | yes | ui-designer → react-specialist | accepted | 1 | scrum/5 | /home/kal24hi/Projects/view-counter-game/.claude/worktrees/agent-ae4331f11c9c2f8e7 |
 
 ## デモ台本
 | # | PO の操作 | 期待する結果 | PBI |
@@ -213,8 +213,16 @@
 - デモ：場面 8a〜8c（お題・目標と上限・対戦の最初のお題が万の位まで）を追加した。1回目の記録は rehearsal-1.md に写した。
 - リハーサル：1回目で自動の全場面が一致（1〜4、5a、5b、6〜7、8a〜8c）。5c は1回目と同じく未達（テストで代替）。
 - 運用上の出来事：最初の `git worktree add` が、無視されたファイル（`web/.vite`）が残っていたため失敗し、ブランチだけ作られた。残っていたディレクトリを消して、既存のブランチで作り直した。
+- 運用上の出来事：1回目のデモを PO が対話モードで起動したまま（Enter 待ち）、統合ブランチの worktree を作り直した。PO に Enter で止めてから実行し直すよう伝えた。
+
+### review
+- PO がデモ2回目を受け入れた。PR #19 を `--merge` でマージした（マージコミット 7491432）。#3・#4・#5 は `Closes` で閉じ、`status:sprint` を外した。
+- main でのテスト：web 9ファイル 124件 pass、Go 5パッケージ ok。
+- PO に示した事項（引き継ぎカード、0ちょうどの決着時の「脱落」表示、「前より高く」の0、該当なしの使用済み、見た目の変更、Google Fonts、「履歴」の字形）は、PO から改善 PBI の指示が無かった。PBI は作っていない。
+- 後片付け：統合ブランチと #3〜#5 の worktree・ブランチ、`worktree-agent-*` のブランチを削除した。
 
 ## デモの判定
 | 回 | 日時 | 判定 | PO の指摘 | 原因の PBI | 対応 |
 |---|---|---|---|---|---|
 | 1 | 2026-10-28T18:06:38+09:00 | 差し戻し | お代の数字も、10,000未満は切り捨てようよ。　出してる意味なくない？ | #3, #4, #5 | 直して見せ直す |
+| 2 | 2026-10-28T19:08:16+09:00 | 受け入れ | — | — | マージした |

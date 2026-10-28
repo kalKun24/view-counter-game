@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-28T15:17:50+09:00",
+ "updated_at": "2026-10-28T19:08:30+09:00",
  "items": [
   {
    "id": "#1",
@@ -28,7 +28,7 @@
   {
    "id": "#3",
    "title": "カウントダウンモード",
-   "status": "sprint",
+   "status": "done",
    "points": 5,
    "ui": "yes",
    "url": "https://github.com/kalKun24/view-counter-game/issues/3"
@@ -36,7 +36,7 @@
   {
    "id": "#4",
    "title": "チャージモード",
-   "status": "sprint",
+   "status": "done",
    "points": 2,
    "ui": "yes",
    "url": "https://github.com/kalKun24/view-counter-game/issues/4"
@@ -44,7 +44,7 @@
   {
    "id": "#5",
    "title": "ハイ＆ロー対戦",
-   "status": "sprint",
+   "status": "done",
    "points": 3,
    "ui": "yes",
    "url": "https://github.com/kalKun24/view-counter-game/issues/5"
