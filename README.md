@@ -2,6 +2,31 @@
 
 YouTubeの再生回数を使った数字ゲーム。サーバーがYouTube Data API v3で再生回数を自動で取得し、Cloud Runで公開する。
 
+## 起動方法（開発）
+
+フロントエンドは `web/`（React + TypeScript + Vite）、サーバーは `server/`（Go）にある。YouTube Data API は呼ばず、モックのサーバーで動かせる。
+
+1. Go のモックサーバーを起動する（既定ポート 8080）。
+
+   ```sh
+   cd server
+   USE_MOCK=1 go run .
+   ```
+
+2. 別のターミナルで、Vite の開発サーバーを起動する。
+
+   ```sh
+   cd web
+   npm install
+   npm run dev
+   ```
+
+   ブラウザで表示された URL（既定 http://localhost:5173/）を開く。`/api` は Vite が Go のサーバーへ中継する。
+
+- Go のサーバーのポートを変えたとき（`PORT=9000` など）は、`API_PROXY_TARGET` で中継先を合わせる。例：`API_PROXY_TARGET=http://localhost:9000 npm run dev`。URL として読めない値や `http(s)` 以外の値のときは、黙って既定に戻さず、起動に失敗する。
+- テストは `npm test`（Vitest を1回実行して終わる）。本物の API には出ず、`fetch` をモックする。ビルドは `npm run build`。
+- ゲーム内で使えるモックの特別なワードは、下の「モックの特別なワード」を見る。
+
 ## キャッシュ
 
 同じワードの組み合わせ（語順・大文字小文字・全角半角の違いを同一視）の検索結果は、サーバーのメモリにキャッシュして YouTube Data API のクォータを節約する。
