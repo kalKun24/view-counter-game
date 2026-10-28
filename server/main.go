@@ -51,7 +51,7 @@ func newClient(getenv func(string) string, log *slog.Logger) (youtube.Client, er
 	if key == "" {
 		return nil, errors.New("YOUTUBE_API_KEY is not set (set USE_MOCK=1 to use the mock)")
 	}
-	return youtube.NewHTTPClient(key, youtube.DefaultBaseURL, &http.Client{Timeout: 10 * time.Second}), nil
+	return youtube.NewHTTPClient(key, youtube.DefaultBaseURL, &http.Client{Timeout: youtube.DefaultHTTPTimeout}), nil
 }
 
 const (

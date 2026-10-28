@@ -67,13 +67,17 @@ type HTTPClient struct {
 // "https://www.googleapis.com/youtube/v3"; tests pass a local server URL.
 func NewHTTPClient(apiKey, baseURL string, hc *http.Client) *HTTPClient {
 	if hc == nil {
-		hc = &http.Client{Timeout: DefaultHTTPTimeout}
+		hc = &http.Client{Timeout: defaultHTTPTimeout}
 	}
 	return &HTTPClient{apiKey: apiKey, baseURL: strings.TrimRight(baseURL, "/"), http: hc}
 }
 
 // DefaultHTTPTimeout is the timeout of the client used when none is given.
 const DefaultHTTPTimeout = 10 * time.Second
+
+// defaultHTTPTimeout is the value NewHTTPClient uses for a nil client. It is a
+// variable only so that tests can shorten it; production code never changes it.
+var defaultHTTPTimeout = DefaultHTTPTimeout
 
 // DefaultBaseURL is the production endpoint.
 const DefaultBaseURL = "https://www.googleapis.com/youtube/v3"
