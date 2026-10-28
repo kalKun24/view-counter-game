@@ -127,9 +127,7 @@ func NewHandler(c youtube.Client, log *slog.Logger, opts ...Option) http.Handler
 				writeError(w, http.StatusInternalServerError, "internal_error", "サーバ内部でエラーが発生しました。")
 				return
 			}
-			// youtube errors are sanitized and never contain the API key.
-			log.Error("youtube request failed", "err", err.Error())
-			writeError(w, http.StatusBadGateway, "upstream_error", "動画情報の取得に失敗しました。")
+			writeLookupError(w, log, err)
 			return
 		}
 		if !res.Found {
