@@ -35,7 +35,7 @@ describe("judge（バースト → クリア → ターン切れ）", () => {
   });
   it("ちょうど上限はバーストでなくクリア、上限 +1 はバースト", () => {
     expect(judge(target, L, [row(limit)])).toBe("clear");
-    expect(judge(target, L, [row(limit + 1)])).toBe("burst");
+    expect(judge(target, L, [row(limit + 10000)])).toBe("burst");
   });
   it("最終ターンでちょうど目標ならターン切れより先にクリア", () => {
     expect(judge(target, L, [row(1), row(1), row(1), row(1), row(target - 4)])).toBe("clear");
@@ -50,12 +50,21 @@ describe("judge（バースト → クリア → ターン切れ）", () => {
   it("0 の行も 1 ターン消費する", () => {
     expect(judge(target, L, Array.from({ length: 5 }, () => row(0)))).toBe("out-turns");
   });
-  it("hard の 0.5% 境界も整数で比べる（上限が小数になる目標）", () => {
+  it("hard の上限は 10,000 未満を切り捨てる（境界は 1 万単位）", () => {
     const H = LEVELS.hard;
-    const t = 1000000001; // 上限 1,005,000,001.005
-    expect(isBurst(1005000001, t, H)).toBe(false);
-    expect(isBurst(1005000002, t, H)).toBe(true);
-    expect(limitOf(t, H)).toBeCloseTo(1005000001.005, 3);
+    const t = 1234560000; // 目標 × 1.005 = 1,240,732,800 → 上限 1,240,730,000
+    expect(limitOf(t, H)).toBe(1240730000);
+    expect(isBurst(1240730000, t, H)).toBe(false); // 上限ちょうどはクリア
+    expect(isBurst(1240740000, t, H)).toBe(true); // 上限 +1万はバースト
+    expect(judge(t, H, [row(1240730000)])).toBe("clear");
+    expect(judge(t, H, [row(1240740000)])).toBe("burst");
+  });
+  it("上限は常に 10,000 の倍数", () => {
+    for (const lv of Object.values(LEVELS)) {
+      for (const t of [100000000, 123450000, 999990000, 4990000000]) {
+        expect(limitOf(t, lv) % 10000).toBe(0);
+      }
+    }
   });
 });
 

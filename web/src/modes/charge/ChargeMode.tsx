@@ -2,7 +2,7 @@ import { useState } from "react";
 import { DifficultySetup } from "../../components/DifficultySetup";
 import { ResultView } from "../../components/ResultView";
 import { WordLog, type LogRow } from "../../components/WordLog";
-import { comma, rand } from "../../lib/format";
+import { comma, rand, truncateViews } from "../../lib/format";
 import { LEVELS, type LevelKey } from "../../lib/levels";
 import { loadLevel, savePrefs } from "../../lib/prefs";
 import { modeTitle } from "../../modes";
@@ -36,7 +36,7 @@ export function ChargeMode({ onExit }: { onExit: () => void }) {
         onBack={onExit}
         onStart={() => {
           const L = LEVELS[level];
-          setPhase({ name: "play", target: rand(L.min, L.max), level });
+          setPhase({ name: "play", target: truncateViews(rand(L.min, L.max)), level });
         }}
       />
     );

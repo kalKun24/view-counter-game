@@ -60,6 +60,13 @@ describe("難易度設定（チャージ）", () => {
 });
 
 describe("プレイ画面（初期）", () => {
+  it("目標は 10,000 未満を切り捨て、上限も 1 万単位で表示する", async () => {
+    const user = setup();
+    // 乱数が 123,456,789 を指しても、目標は 123,450,000 になる（easy: 上限 129,622,500 → 129,620,000）
+    await startGame(user, { level: "easy", target: 123_456_789 });
+    expect(tid("charge-label")).toHaveTextContent("目標 1億2345万 〜 上限 1億2962万");
+    expect(tid("charge-sub")).toHaveTextContent("あと 1億2345万 回");
+  });
   it("合計 0、あと{目標}回、残りターン、バー 0%、履歴なし", async () => {
     const user = setup();
     await startGame(user);
