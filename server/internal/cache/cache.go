@@ -5,9 +5,23 @@ package cache
 import (
 	"container/list"
 	"context"
+	"fmt"
+	"runtime/debug"
 	"sync"
 	"time"
 )
+
+// PanicError is the error returned to every caller sharing a load when the
+// load function panicked. The panic is recovered so the process keeps running;
+// nothing is cached, so the next call for the key loads again.
+type PanicError struct {
+	Value any    // the value passed to panic
+	Stack []byte // stack of the panicking goroutine
+}
+
+func (e *PanicError) Error() string {
+	return fmt.Sprintf("cache load panicked: %v", e.Value)
+}
 
 type entry[V any] struct {
 	key     string
@@ -104,7 +118,7 @@ func (c *Cache[V]) Do(ctx context.Context, key string, load func(context.Context
 }
 
 func (c *Cache[V]) run(ctx context.Context, key string, cl *call[V], load func(context.Context) (V, error)) {
-	cl.value, cl.err = load(ctx)
+	cl.value, cl.err = safeLoad(ctx, load)
 
 	c.mu.Lock()
 	delete(c.inflight, key)
@@ -118,4 +132,16 @@ func (c *Cache[V]) run(ctx context.Context, key string, cl *call[V], load func(c
 	}
 	c.mu.Unlock()
 	close(cl.done)
+}
+
+// safeLoad calls load and converts a panic into a *PanicError. run executes in
+// its own goroutine, so an unrecovered panic here would end the process.
+func safeLoad[V any](ctx context.Context, load func(context.Context) (V, error)) (v V, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			var zero V
+			v, err = zero, &PanicError{Value: r, Stack: debug.Stack()}
+		}
+	}()
+	return load(ctx)
 }

@@ -216,3 +216,49 @@ func TestWaiterCanCancel(t *testing.T) {
 	}
 	close(release)
 }
+
+func TestPanicInLoadIsRecoveredAndSharedWithAllWaiters(t *testing.T) {
+	c, _ := newTestCache(time.Hour, 10)
+	gate := make(chan struct{})
+	load := func(context.Context) (int, error) {
+		<-gate
+		panic("boom")
+	}
+	const n = 5
+	errs := make(chan error, n)
+	for i := 0; i < n; i++ {
+		go func() {
+			_, _, err := c.Do(context.Background(), "k", load)
+			errs <- err
+		}()
+	}
+	deadline := time.Now().Add(5 * time.Second)
+	for c.Waiters("k") < n-1 {
+		if time.Now().After(deadline) {
+			t.Fatal("waiters did not gather")
+		}
+		time.Sleep(time.Millisecond)
+	}
+	close(gate)
+	for i := 0; i < n; i++ {
+		var pe *PanicError
+		if err := <-errs; !errors.As(err, &pe) || pe.Value != "boom" || len(pe.Stack) == 0 {
+			t.Fatalf("waiter %d: err = %v, want *PanicError(boom) with stack", i, err)
+		}
+	}
+	if c.Len() != 0 || c.Waiters("k") != 0 {
+		t.Fatalf("panic left state behind: len=%d waiters=%d", c.Len(), c.Waiters("k"))
+	}
+}
+
+func TestPanicIsNotCachedAndNextCallReloads(t *testing.T) {
+	c, _ := newTestCache(time.Hour, 10)
+	if _, _, err := c.Do(context.Background(), "k", func(context.Context) (int, error) { panic("boom") }); err == nil {
+		t.Fatal("want error from panicking load")
+	}
+	var calls atomic.Int32
+	v, hit, err := c.Do(context.Background(), "k", counting(&calls, 7))
+	if err != nil || hit || v != 7 || calls.Load() != 1 {
+		t.Fatalf("reload: v=%d hit=%v err=%v calls=%d", v, hit, err, calls.Load())
+	}
+}
