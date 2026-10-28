@@ -41,3 +41,20 @@ func TestHandlerWithMock(t *testing.T) {
 		}
 	}
 }
+
+func TestHandlerWithMockFixedViews(t *testing.T) {
+	h := NewHandler(&youtube.MockClient{SlowDelay: time.Millisecond}, slog.New(slog.NewTextHandler(io.Discard, nil)))
+	for q, want := range map[string]string{
+		"n5000":           `"viewCount":5000`,
+		"Ｎ０ foo":          `"viewCount":0`,
+		"slow n123456789": `"viewCount":123456789`,
+	} {
+		r := httptest.NewRequest("GET", "/api/views?q="+url.QueryEscape(q), nil)
+		w := httptest.NewRecorder()
+		h.ServeHTTP(w, r)
+		body := w.Body.String()
+		if w.Code != http.StatusOK || !strings.Contains(body, `"found":true`) || !strings.Contains(body, want) {
+			t.Errorf("%q: %d %s (want %s)", q, w.Code, body, want)
+		}
+	}
+}

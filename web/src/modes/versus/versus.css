@@ -1,0 +1,78 @@
+/* ハイ＆ロー対戦だけの見た目。共通の styles.css は触らない。色は既存の CSS 変数のみ。 */
+.vs-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.vs-count {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+.vs-player-row {
+  display: flex;
+  gap: 8px;
+}
+.vs-player-row input {
+  flex: 1;
+  min-width: 0;
+}
+.vs-remove {
+  width: 44px;
+  min-width: 44px;
+  padding: 0;
+}
+.vs-survivors {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chip {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.chip[data-status="current"] {
+  font-weight: 700;
+  border: 2px solid var(--accent);
+}
+.chip[data-status="out"] {
+  color: var(--muted);
+}
+.chip[data-status="out"] .name {
+  text-decoration: line-through;
+}
+.chip[data-status="winner"] {
+  font-weight: 700;
+  border: 2px solid var(--good);
+}
+.msg.good {
+  color: var(--good);
+}
+.vs-go {
+  width: 100%;
+  min-height: 48px;
+}
+.vs-winner-name {
+  font-family: var(--display);
+  font-size: 1.6rem;
+  text-align: center;
+  color: var(--counter-fg);
+  overflow-wrap: anywhere;
+}
+.counter:has(.vs-winner-name) .num {
+  text-align: center;
+}
+.log .out {
+  margin-left: 6px;
+  font-weight: 700;
+  color: var(--bad);
+}

@@ -3,6 +3,7 @@ package youtube
 import (
 	"context"
 	"errors"
+	"strings"
 	"testing"
 	"time"
 )
@@ -73,5 +74,61 @@ func TestMockClient_Slow(t *testing.T) {
 	m.SlowDelay = time.Hour
 	if _, err := m.SearchVideoIDs(ctx, "slow"); !errors.Is(err, context.Canceled) {
 		t.Errorf("err = %v", err)
+	}
+}
+
+func TestMockClient_FixedViews(t *testing.T) {
+	m := &MockClient{SlowDelay: time.Millisecond}
+	tests := []struct {
+		q    string
+		want uint64
+		fix  bool // false: expect an ordinary (hash-based) result
+	}{
+		{"n5000", 5000, true},
+		{"N0", 0, true},
+		{"ｎ５０００ foo", 5000, true},
+		{"foo n123456789", 123456789, true},
+		{"n5000 slow", 5000, true},
+		{"n9223372036854775807", 9223372036854775807, true},
+		{"n007", 7, true},
+		// First in sorted order wins: "n1" < "n2".
+		{"n2 n1", 1, true},
+		// Overflow is skipped and the next n word is used.
+		{"n9223372036854775808 n3", 3, true},
+		{"n99999999999999999999", 0, false},
+		{"n", 0, false},
+		{"n-5", 0, false},
+		{"n12a", 0, false},
+		{"xn5", 0, false},
+	}
+	for _, tt := range tests {
+		ids, err := m.SearchVideoIDs(context.Background(), tt.q)
+		if err != nil || len(ids) != 1 {
+			t.Fatalf("%q: ids=%v err=%v", tt.q, ids, err)
+		}
+		vs, err := m.GetVideos(context.Background(), ids)
+		if err != nil || len(vs) != 1 || vs[0].ViewCount == nil {
+			t.Fatalf("%q: vs=%v err=%v", tt.q, vs, err)
+		}
+		if tt.fix && *vs[0].ViewCount != tt.want {
+			t.Errorf("%q: views = %d, want %d", tt.q, *vs[0].ViewCount, tt.want)
+		}
+		if !tt.fix && *vs[0].ViewCount < 1000 {
+			t.Errorf("%q: expected ordinary result, got %d", tt.q, *vs[0].ViewCount)
+		}
+		if !strings.HasPrefix(vs[0].Title, "Mock video: ") {
+			t.Errorf("%q: title = %q", tt.q, vs[0].Title)
+		}
+	}
+	// Special words keep precedence over n<digits>.
+	if ids, _ := m.SearchVideoIDs(context.Background(), "n5000 nomatch"); len(ids) != 0 {
+		t.Errorf("nomatch should win: %v", ids)
+	}
+	var ue *UpstreamError
+	if _, err := m.SearchVideoIDs(context.Background(), "n5000 quota"); !errors.As(err, &ue) || ue.Status != 403 {
+		t.Errorf("quota should win: %v", err)
+	}
+	if _, err := m.SearchVideoIDs(context.Background(), "n5000 error"); !errors.As(err, &ue) || ue.Status != 500 {
+		t.Errorf("error should win: %v", err)
 	}
 }
