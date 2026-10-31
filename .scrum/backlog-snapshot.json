@@ -24,6 +24,7 @@
   {"id": "#26", "title": "上流呼び出しの全体上限とクォータ切れ中の抑制", "status": "new", "points": null, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/26"},
   {"id": "#27", "title": "回数制限の堅牢化（走査・ログ・プロキシの前提）", "status": "new", "points": null, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/27"},
   {"id": "#28", "title": "検証環境と依存の固定（x/text v0.41.0、ダイジェスト、手順）", "status": "new", "points": null, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/28"},
-  {"id": "#29", "title": "設定の扱いとテストの確かさを揃える", "status": "new", "points": null, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/29"}
+  {"id": "#29", "title": "設定の扱いとテストの確かさを揃える", "status": "new", "points": null, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/29"},
+  {"id": "#31", "title": "web のテストを負荷のある環境でも安定させる", "status": "new", "points": null, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/31"}
  ]
 }
