@@ -31,7 +31,12 @@ export function SearchForm({ isUsed, onResult, onHome }: Props) {
 
   // 重複・通信失敗・q 不正のあとは検索入力へフォーカスを戻す。
   useEffect(() => {
-    if (state.kind === "duplicate" || state.kind === "error" || state.kind === "invalid") {
+    if (
+      state.kind === "duplicate" ||
+      state.kind === "error" ||
+      state.kind === "invalid" ||
+      state.kind === "throttled"
+    ) {
       inputRef.current?.focus();
     }
   }, [state]);
