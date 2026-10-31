@@ -14,7 +14,7 @@ type limitConfig struct {
 }
 
 const (
-	defaultRateLimit  = 20
+	defaultRateLimit  = 10
 	maxRateLimit      = 100000
 	defaultRateWindow = time.Minute
 	minRateWindow     = time.Second

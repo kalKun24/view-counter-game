@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/kalKun24/view-counter-game/server/internal/quota"
 	"github.com/kalKun24/view-counter-game/server/internal/youtube"
 )
 
@@ -18,6 +19,11 @@ const statusClientClosedRequest = 499
 // youtube errors are sanitized and never contain the API key.
 func writeLookupError(w http.ResponseWriter, log *slog.Logger, err error) {
 	switch {
+	case errors.Is(err, quota.ErrLimitReached) || errors.Is(err, quota.ErrSuppressed):
+		// Upstream was not called. The start of the stop is logged once by the
+		// guard, so a request here is only a debug line (no flood in the log).
+		log.Debug("upstream not called", "reason", err.Error())
+		writeError(w, http.StatusServiceUnavailable, "quota_exceeded", "YouTube API の利用上限に達しました。しばらくしてからもう一度お試しください。")
 	case youtube.IsQuotaExceeded(err):
 		log.Error("youtube quota exceeded", "err", err.Error())
 		writeError(w, http.StatusServiceUnavailable, "quota_exceeded", "YouTube API の利用上限に達しました。しばらくしてからもう一度お試しください。")

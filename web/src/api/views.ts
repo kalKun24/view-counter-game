@@ -9,6 +9,7 @@ export type ViewsResult =
   | { kind: "nomatch" }
   | { kind: "invalid" }
   | { kind: "quota" }
+  | { kind: "throttled"; retryAfter: number | null }
   | { kind: "error"; reason: ErrorReason; status?: number }
   | { kind: "cancelled" };
 
@@ -26,7 +27,28 @@ async function readJson(res: Response): Promise<unknown> {
   }
 }
 
+/**
+ * Retry-After を整数秒として読む。半角数字だけで 1 以上の安全な整数なら、その値。
+ * 欠落・0・負・小数・符号付き・日時形式・単位付き・桁区切り・安全な整数を超える値は null。
+ */
+export function parseRetryAfter(raw: string | null): number | null {
+  if (raw === null) return null;
+  const s = raw.trim();
+  if (!/^[0-9]+$/.test(s)) return null;
+  const n = Number(s);
+  return Number.isSafeInteger(n) && n >= 1 ? n : null;
+}
+
 async function classify(res: Response): Promise<ViewsResult> {
+  if (res.status === 429) {
+    // 429 のうち too_many_requests だけを「制限中」とする。それ以外は通信失敗のまま。
+    const body = await readJson(res);
+    const code = isRecord(body) && isRecord(body.error) ? body.error.code : undefined;
+    if (code === "too_many_requests") {
+      return { kind: "throttled", retryAfter: parseRetryAfter(res.headers.get("Retry-After")) };
+    }
+    return { kind: "error", reason: "http", status: res.status };
+  }
   if (res.status === 400) {
     const body = await readJson(res);
     const code = isRecord(body) && isRecord(body.error) ? body.error.code : undefined;

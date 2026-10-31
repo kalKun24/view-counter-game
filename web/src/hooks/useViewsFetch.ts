@@ -13,6 +13,7 @@ export type FetchState =
   | { kind: "duplicate" }
   | { kind: "invalid" }
   | { kind: "quota" }
+  | { kind: "throttled"; retryAfter: number | null }
   | { kind: "error"; reason: string };
 
 interface Options {
@@ -79,6 +80,11 @@ export function useViewsFetch({ isUsed, onResult }: Options) {
           // クォータ切れはモードへ渡さない。ターンも使用済みも変えない。
           console.warn("views fetch rejected: quota_exceeded");
           setState({ kind: "quota" });
+          return;
+        case "throttled":
+          // 制限中はモードへ渡さない。ターンも使用済みも変えない。検索ワードはログに含めない。
+          console.warn("views fetch rejected: too_many_requests", { retryAfter: result.retryAfter });
+          setState({ kind: "throttled", retryAfter: result.retryAfter });
           return;
         case "error":
           console.warn("views fetch failed", { reason: result.reason, status: result.status });
