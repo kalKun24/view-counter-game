@@ -25,6 +25,8 @@
   {"id": "#23", "title": "キャッシュ読み込みの異常終了を堅牢にする（Goexit とログ）", "status": "ready", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/23"},
   {"id": "#20", "title": "表示する文字列を安全にする", "status": "ready", "points": 3, "ui": "yes", "url": "https://github.com/kalKun24/view-counter-game/issues/20"},
   {"id": "#12", "title": "コンテナ化（静的配信と Dockerfile）", "status": "ready", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/12"},
-  {"id": "#13", "title": "Cloud Run への公開", "status": "ready", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/13"}
+  {"id": "#13", "title": "Cloud Run への公開", "status": "ready", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/13"},
+  {"id": "#32", "title": "上限・抑制中の待ち時間を伝える（Retry-After と画面の文言）", "status": "new", "points": null, "ui": "yes", "url": "https://github.com/kalKun24/view-counter-game/issues/32"},
+  {"id": "#33", "title": "検索の予約に videos.list の分を含める", "status": "new", "points": null, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/33"}
  ]
 }

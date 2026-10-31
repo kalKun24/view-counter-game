@@ -1,0 +1,100 @@
+{
+  "failures": 0,
+  "scenes": [
+    {
+      "id": 4,
+      "checks": [
+        {
+          "selector": "[data-testid=counter-turns]",
+          "op": "expect_text",
+          "want": "残り5ターン",
+          "ok": true,
+          "actual": "残り5ターン"
+        },
+        {
+          "selector": "[data-testid=log-row]",
+          "op": "expect_count",
+          "want": 1,
+          "ok": true,
+          "actual": 1
+        },
+        {
+          "selector": "[data-testid=counter-turns]",
+          "op": "expect_text",
+          "want": "残り4ターン",
+          "ok": true,
+          "actual": "残り4ターン"
+        },
+        {
+          "selector": "[data-testid=log-row]",
+          "op": "expect_count",
+          "want": 2,
+          "ok": true,
+          "actual": 2
+        },
+        {
+          "selector": "[data-testid=counter-turns]",
+          "op": "expect_text",
+          "want": "残り3ターン",
+          "ok": true,
+          "actual": "残り3ターン"
+        },
+        {
+          "selector": "[data-testid=throttle-message]",
+          "op": "expect_text",
+          "want": "操作が多すぎます。",
+          "ok": true,
+          "actual": "操作が多すぎます。あと約60秒待ってから、もう一度試してください。"
+        },
+        {
+          "selector": "[data-testid=throttle-message]",
+          "op": "expect_text",
+          "want": "もう一度試してください。",
+          "ok": true,
+          "actual": "操作が多すぎます。あと約60秒待ってから、もう一度試してください。"
+        },
+        {
+          "selector": "[data-testid=counter-turns]",
+          "op": "expect_text",
+          "want": "残り3ターン",
+          "ok": true,
+          "actual": "残り3ターン"
+        },
+        {
+          "selector": "[data-testid=log-row]",
+          "op": "expect_count",
+          "want": 2,
+          "ok": true,
+          "actual": 2
+        },
+        {
+          "selector": "[data-testid=search-input]",
+          "op": "expect_count",
+          "want": 1,
+          "ok": true,
+          "actual": 1
+        },
+        {
+          "selector": "[data-testid=retry-button]",
+          "op": "expect_count",
+          "want": 0,
+          "ok": true,
+          "actual": 0
+        },
+        {
+          "selector": "[data-testid=error-message]",
+          "op": "expect_count",
+          "want": 0,
+          "ok": true,
+          "actual": 0
+        }
+      ],
+      "screenshots": [
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-5/shots/20261031T132533/scene-4-before-throttle.png",
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-5/shots/20261031T132533/scene-4-throttled.png"
+      ],
+      "error": null
+    }
+  ],
+  "console_errors": []
+}

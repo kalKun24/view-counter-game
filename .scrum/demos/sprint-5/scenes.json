@@ -1,0 +1,38 @@
+{
+  "viewport": [390, 844],
+  "scenes": [
+    {
+      "id": 4,
+      "title": "RATE_LIMIT=2 のカウントダウンで3回続けて検索する（#25）",
+      "steps": [
+        {"goto": "/"},
+        {"click": "[data-testid=mode-countdown]"},
+        {"wait": "[data-testid=setup-start]"},
+        {"click": "[data-testid=setup-start]"},
+        {"wait": "[data-testid=search-input]"},
+        {"expect_text": ["[data-testid=counter-turns]", "残り5ターン"]},
+        {"fill": ["[data-testid=search-input]", "n123456789 foo"]},
+        {"click": "[data-testid=search-submit]"},
+        {"expect_count": ["[data-testid=log-row]", 1]},
+        {"expect_text": ["[data-testid=counter-turns]", "残り4ターン"]},
+        {"fill": ["[data-testid=search-input]", "n222222 bar"]},
+        {"click": "[data-testid=search-submit]"},
+        {"expect_count": ["[data-testid=log-row]", 2]},
+        {"expect_text": ["[data-testid=counter-turns]", "残り3ターン"]},
+        {"screenshot": "before-throttle"},
+        {"fill": ["[data-testid=search-input]", "n333333 baz"]},
+        {"click": "[data-testid=search-submit]"},
+        {"wait": "[data-testid=throttle-message]"},
+        {"expect_text": ["[data-testid=throttle-message]", "操作が多すぎます。"]},
+        {"expect_text": ["[data-testid=throttle-message]", "もう一度試してください。"]},
+        {"expect_text": ["[data-testid=counter-turns]", "残り3ターン"]},
+        {"expect_count": ["[data-testid=log-row]", 2]},
+        {"expect_count": ["[data-testid=search-input]", 1]},
+        {"expect_count": ["[data-testid=retry-button]", 0]},
+        {"expect_count": ["[data-testid=error-message]", 0]},
+        {"sleep": 300},
+        {"screenshot": "throttled"}
+      ]
+    }
+  ]
+}
