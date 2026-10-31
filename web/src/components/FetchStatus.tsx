@@ -16,6 +16,9 @@ export function FetchStatus({ state, onRetry }: Props) {
       data-testid="search-status"
       data-state={state.kind}
       data-reason={state.kind === "error" ? state.reason : undefined}
+      data-retry-after={
+        state.kind === "throttled" && state.retryAfter !== null ? state.retryAfter : undefined
+      }
     >
       <div role="status" aria-live="polite">
         {state.kind === "loading" && (
@@ -31,6 +34,13 @@ export function FetchStatus({ state, onRetry }: Props) {
         {state.kind === "invalid" && (
           <p className="msg bad" data-testid="error-message">
             このワードでは検索できません。別のワードを入れてください。
+          </p>
+        )}
+        {state.kind === "throttled" && (
+          <p className="msg" data-testid="throttle-message">
+            {state.retryAfter !== null
+              ? `操作が多すぎます。あと約${state.retryAfter}秒待ってから、もう一度試してください。`
+              : "少し待ってから、もう一度試してください。"}
           </p>
         )}
       </div>

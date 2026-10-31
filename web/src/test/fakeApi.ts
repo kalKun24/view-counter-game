@@ -19,6 +19,16 @@ export const upstreamError = () =>
 export const quotaExceeded = () =>
   jsonResponse({ error: { code: "quota_exceeded", message: "x" } }, 503);
 
+/** 429 too_many_requests。retryAfter が undefined ならヘッダーを付けない。 */
+export const tooMany = (retryAfter?: string, code = "too_many_requests") =>
+  new Response(JSON.stringify({ error: { code, message: "x" } }), {
+    status: 429,
+    headers: {
+      "Content-Type": "application/json",
+      ...(retryAfter === undefined ? {} : { "Retry-After": retryAfter }),
+    },
+  });
+
 export const gatewayTimeout = () =>
   jsonResponse({ error: { code: "timeout", message: "x" } }, 504);
 
