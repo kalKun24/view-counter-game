@@ -1,5 +1,5 @@
 # Sprint 4
-- phase: review
+- phase: retrospective
 - goal: PO が、脆弱性の検出が0件になったこと、連打が 429 で止まること、クォータ切れで 503 と「今日は遊べない」の画面が出ること、YouTube の呼び出しが必ず打ち切られることを、本物の API を呼ばずに確かめられる。
 - started: 2026-10-28T21:38:32+09:00
 - base_branch: main
@@ -7,11 +7,11 @@
 ## 対象 PBI
 | PBI | points | ui | 担当構成 | 状態 | 差し戻し | ブランチ | 作業ディレクトリ |
 |---|---|---|---|---|---|---|---|
-| #21 | 2 | no | golang-pro | approved | 0 | scrum/21 | .claude/worktrees/agent-a77896d198c863cb5 |
-| #7 | 3 | no | golang-pro | approved | 0 | scrum/7 | .claude/worktrees/agent-afafbe5742da2f1f1 |
-| #10 | 2 | no | golang-pro | approved | 1 | scrum/10 | .claude/worktrees/agent-a238b19a7710ab7d1 |
-| #11 | 1 | yes | ui-designer → react-specialist | approved | 0 | scrum/11 | .claude/worktrees/agent-add14766c877d8a3e |
-| #22 | 1 | no | golang-pro | approved | 0 | scrum/22 | .claude/worktrees/agent-a2536131ea3eed748 |
+| #21 | 2 | no | golang-pro | accepted | 0 | scrum/21 | .claude/worktrees/agent-a77896d198c863cb5 |
+| #7 | 3 | no | golang-pro | accepted | 0 | scrum/7 | .claude/worktrees/agent-afafbe5742da2f1f1 |
+| #10 | 2 | no | golang-pro | accepted | 1 | scrum/10 | .claude/worktrees/agent-a238b19a7710ab7d1 |
+| #11 | 1 | yes | ui-designer → react-specialist | accepted | 0 | scrum/11 | .claude/worktrees/agent-add14766c877d8a3e |
+| #22 | 1 | no | golang-pro | accepted | 0 | scrum/22 | .claude/worktrees/agent-a2536131ea3eed748 |
 
 ## デモ台本
 | # | PO の操作 | 期待する結果 | PBI |
@@ -122,3 +122,15 @@
   - 既知の未対応：画面が 429（`too_many_requests`）を扱わない。#7 はサーバ側だけで、画面の PBI が無い。新規として PO に示す。
 - #11 code-review：approve（must 0、should 3）。`npm test` は 133 件すべて pass（security-review での1件の fail は再現せず、高負荷によるタイムアウトと判断する）。`npm run build` 成功。受け入れ基準3項目、UI 仕様、T2-1（数字を増やさない）と一致。→ #11 を approved にした。
   - should：`.search-form` の流用（不要：仕様が新しい CSS を作らないと定め、コメントで意図を明示）。取得中に「やめる」のテストが `await Promise.resolve()` 1回の待機で、無意味に通る可能性がある（新規）。チャージの履歴の不変を行の内容まで見ていない（不要：合計と補足の不変は確かめている）。
+### review
+- PO がデモ全体を受け入れた。PR #30 を `main` にマージした（`Closes` で #21・#7・#10・#11・#22 を閉じ、`status:sprint` を外した）。
+- マージ後の `main` でのテスト：`make test-race` 5パッケージ ok。`make vuln` 終了コード 0（呼び出しのある検出 0、module レベル 1）。`npm run build` 成功。
+  - web の1回目は 133 件中 129 pass、4 件 fail。いずれも 5000ms のタイムアウトで、`npm ci` の直後だった（`quota.test.tsx` 1件、`App.test.tsx` 2件、`Versus.test.tsx` 1件。うち1件は前のテストの打ち切りに続く失敗）。
+  - 同じコードで再実行し、10 ファイル 133 件すべて pass した（10.5 秒）。#11 の security-review と同じ、負荷でのタイムアウトと判断する。テストが負荷で揺らぐ事象として振り返りで扱う。
+- PO に示した判断事項（#11 の UI 仕様の3点、GO-2026-6629、新しい PBI #25〜#29、504 の追加）は、受け入れとは別に次の計画で決める。
+- 後片付け：PBI の worktree 5つと統合ブランチの worktree を削除し、`scrum/*` と `worktree-agent-*` のブランチを削除した。
+
+## デモの判定
+| 回 | 日時 | 判定 | PO の指摘 | 原因の PBI | 対応 |
+|---|---|---|---|---|---|
+| 1 | 2026-10-31T11:58:30+09:00 | 受け入れ | — | — | マージした |
