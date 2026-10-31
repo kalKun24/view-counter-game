@@ -8,7 +8,10 @@
 //	                 setting it together with YOUTUBE_API_KEY is a startup error
 //	CACHE_TTL        optional; cache lifetime in time.ParseDuration format (default 1h)
 //	PORT             optional; listen port (default 8080)
-//	RATE_LIMIT       optional; /api/ requests allowed per client IP per window, 1-100000 (default 20)
+//	DAILY_UNIT_LIMIT optional; own daily limit of YouTube Data API units (search.list 100,
+//	                 videos.list 1), 1-10000 (default 8000); the day changes at 00:00
+//	                 America/Los_Angeles. Set but empty or invalid is a startup error.
+//	RATE_LIMIT       optional; /api/ requests allowed per client IP per window, 1-100000 (default 10)
 //	RATE_LIMIT_WINDOW optional; window length, 1s-24h in time.ParseDuration format (default 1m)
 //	TRUSTED_PROXY_HOPS optional; how many X-Forwarded-For entries from the right were added
 //	                 by trusted proxies, 1-10 (default 1, the Cloud Run front end)
@@ -27,6 +30,7 @@ import (
 
 	"github.com/kalKun24/view-counter-game/server/internal/api"
 	"github.com/kalKun24/view-counter-game/server/internal/cache"
+	"github.com/kalKun24/view-counter-game/server/internal/quota"
 	"github.com/kalKun24/view-counter-game/server/internal/youtube"
 )
 
@@ -94,6 +98,19 @@ func main() {
 		log.Error("cannot start", "err", err.Error())
 		os.Exit(1)
 	}
+	unitLimit, err := dailyUnitLimit(os.LookupEnv)
+	if err != nil {
+		log.Error("cannot start", "err", err.Error())
+		os.Exit(1)
+	}
+	pacific, err := quota.LoadPacific()
+	if err != nil {
+		log.Error("cannot start", "err", err.Error())
+		os.Exit(1)
+	}
+	guard := quota.New(unitLimit, pacific, time.Now, log)
+	client = quota.Wrap(client, guard)
+	log.Info("daily unit limit", "limit", unitLimit, "resetsAt", "00:00 "+quota.PacificZone, "suppressFor", quota.SuppressFor.String())
 	log.Info("rate limit", "limit", lim.Limit, "window", lim.Window.String(), "trustedProxyHops", lim.Hops)
 	log.Info("cache", "ttl", ttl.String(), "maxEntries", cacheMaxEntries)
 	port := os.Getenv("PORT")
