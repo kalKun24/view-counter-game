@@ -18,7 +18,7 @@ func TestRateLimitConfigDefaults(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if cfg.Limit != 20 || cfg.Window != time.Minute || cfg.Hops != 1 {
+	if cfg.Limit != 10 || cfg.Window != time.Minute || cfg.Hops != 1 {
 		t.Errorf("cfg = %+v", cfg)
 	}
 }
