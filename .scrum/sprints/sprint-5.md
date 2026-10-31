@@ -1,5 +1,5 @@
 # Sprint 5
-- phase: review
+- phase: retrospective
 - goal: 本物の API を呼ばずに、PO が次の3点を確かめられる。ワードを変えて連打しても1日の上限で上流の呼び出しが止まり、クォータが切れた後は上流を呼ばない。連打の制限に当たると「あと約N秒待って」の画面が出て、ゲームの状態は変わらない。`make vuln` の検出が、呼び出しの無いモジュールまで含めて0件になる。
 - started: 2026-10-31T13:03:05+09:00
 - base_branch: main
@@ -7,9 +7,9 @@
 ## 対象 PBI
 | PBI | points | ui | 担当構成 | 状態 | 差し戻し | ブランチ | 作業ディレクトリ |
 |---|---|---|---|---|---|---|---|
-| #26 | 5 | no | golang-pro | approved | 0 | scrum/26 | .claude/worktrees/agent-afbd53001fefb6037 |
-| #28 | 2 | no | golang-pro | approved | 0 | scrum/28 | .claude/worktrees/agent-ad7e5412cbface0d5 |
-| #25 | 3 | yes | ui-designer → react-specialist | approved | 0 | scrum/25 | .claude/worktrees/agent-aca7d6bff5be4ca12 |
+| #26 | 5 | no | golang-pro | accepted | 0 | scrum/26 | .claude/worktrees/agent-afbd53001fefb6037 |
+| #28 | 2 | no | golang-pro | accepted | 0 | scrum/28 | .claude/worktrees/agent-ad7e5412cbface0d5 |
+| #25 | 3 | yes | ui-designer → react-specialist | accepted | 0 | scrum/25 | .claude/worktrees/agent-aca7d6bff5be4ca12 |
 
 ## デモ台本
 | # | PO の操作 | 期待する結果 | PBI |
@@ -115,3 +115,13 @@
 - 統合ブランチでのテスト：`make test-race` 6パッケージ ok、`make vuln` は `No vulnerabilities found.` のみ（module レベルの注記も無い）、web は 11 ファイル 165 件 pass（17.3 秒、タイムアウトなし）、`npm run build` 成功。
 - デモの場所：`.scrum/demos/sprint-5/`（1回目）。`browser.mjs` はスクラムマスターがプラグインから写した（元と同一であることを `cmp` で確かめた）。台本とスクリプトは golang-pro に依頼した。台本の場面2は、#26 の報告を受けて「上限を大きくして起動し直す」に直した。
 - リハーサル：1回目の実行で4場面すべて一致した（`rehearsal.md`、確認 NG 0）。画面2枚に崩れやエラーは無い。「履歴」の見出しのにじみは Sprint 4 の画面にもあり、ヘッドレスの Chrome のフォントによる。終了後に残ったプロセスは無い。起動確認は `/` に向けた（Sprint 4 の不一致は再発していない）。
+### review
+- PO がデモ全体を受け入れた。PR #34 を `main` にマージした（`Closes` で #26・#28・#25 を閉じ、`status:sprint` を外した）。
+- マージ後の `main` でのテスト：`make test-race` 6パッケージ ok（Go のテスト関数 94）。`make vuln` は `No vulnerabilities found.` のみ。web は 11 ファイル 165 件 pass（16.5 秒、タイムアウトなし）。`npm run build` 成功。合計 259 件。
+- PO に示した判断事項（#11 の文言と #26 の1時間の抑制の食い違い → #32、429 の補足の1行、`Retry-After` の上限、新しい PBI #32・#33、#29 への追加）は、受け入れとは別に次の計画で決める。
+- 後片付け：PBI の worktree 3つと統合ブランチの worktree を削除し、`scrum/*` と `worktree-agent-*` のブランチを削除した。#26 の worktree には、実装の Agent のロック（pid はこのセッション自身）が残っていた。Agent は完了していたので、`git worktree unlock` してから削除した。#25 の worktree には `web/tsconfig.tsbuildinfo`（ビルドの副産物）だけが残っていたので、`--force` で削除した。
+
+## デモの判定
+| 回 | 日時 | 判定 | PO の指摘 | 原因の PBI | 対応 |
+|---|---|---|---|---|---|
+| 1 | 2026-10-31T13:39:15+09:00 | 受け入れ | — | — | マージした |
