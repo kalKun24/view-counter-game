@@ -39,8 +39,26 @@ make vuln        # Docker 内で govulncheck を実行し、結果を表示す�
 
 - `make test-race` は、全パッケージが通れば各行が `ok` になる。失敗があれば非 0 で終了する。
 - `make vuln` は、脆弱性が無ければ `No vulnerabilities found.` を表示する。検出があれば一覧を表示して非 0 で終了する。
-- Docker のイメージ（`golang:1.26.10-bookworm`）と `govulncheck` のバージョン（`v1.9.0`）は `server/Makefile` で固定している。上げるときは Makefile の2行を変える。
+- Docker のイメージ（`golang:1.26.10-bookworm`、ダイジェストつき）と `govulncheck` のバージョン（`v1.9.0`）は `server/Makefile` で固定している。上げる手順は、下の「版を上げるとき」を見る。
 - 初回はイメージと依存の取得のため、ネットワークと時間が要る。ソースは読み取り専用でマウントするため、リポジトリのファイルは変わらない。
+
+### 版を上げるとき
+
+Go の版、イメージ、`govulncheck` の版は、次の順にそろえて変える。
+
+1. 新しいイメージを取得し、ダイジェストを確かめる。`docker pull golang:<版>-bookworm` を実行し、`docker image inspect golang:<版>-bookworm --format '{{index .RepoDigests 0}}'` で `sha256:` の値を得る。タグは後から別のイメージに付け替えられるため、タグだけで固定しない。
+2. `server/Makefile` の `GO_IMAGE` を `golang:<版>-bookworm@sha256:<ダイジェスト>` に書き換える。`docker pull golang:<版>-bookworm@sha256:<ダイジェスト>` が通ることを確かめる。
+3. `server/go.mod` の `toolchain go<版>` を、イメージの版と同じにする。
+4. `govulncheck` の版を上げる場合は、`server/Makefile` の `GOVULNCHECK_VERSION` を書き換える。
+5. `server/` で `make test-race` と `make vuln` を実行し、通ることを確かめる。`make vuln` は `No vulnerabilities found.` だけで終わり、`modules you require` の注記が出ないことを確かめる。
+
+### `make vuln` が検出を出したとき
+
+検出の ID（`GO-YYYY-NNNN`）を `-show verbose` で確かめ、次の順に扱う。
+
+1. 修正版があれば、その版に上げる（モジュールなら `go get`、標準ライブラリなら上の手順で Go の版を上げる）。上げたら `make test-race` と `make vuln` をやり直す。
+2. 修正版が無ければ、自分のコードから脆弱な関数を呼んでいるかを確かめる。呼び出しが無い場合は、呼び出しが無い理由（どの関数が脆弱で、なぜ経路に無いか）と ID を記録して残す。
+3. 呼び出しがあれば、公開を止める。修正版が出るか、呼び出しを取り除くまで公開しない。
 
 ## キャッシュ
 

@@ -1,6 +1,7 @@
 # 検証環境。ホストに cgo・gcc・govulncheck が無くても、Docker で同じ結果を得る。
 # イメージと govulncheck のバージョンは固定する（latest を使わない）。
-GO_IMAGE := golang:1.26.10-bookworm
+# イメージはタグとダイジェストの両方で固定する。タグの版は go.mod の toolchain 行と一致させる。
+GO_IMAGE := golang:1.26.10-bookworm@sha256:386f0cbb8fb3402ff5a15048c96731e6ff37142d31182f3b72306359a1f5e9b7
 GOVULNCHECK_VERSION := v1.9.0
 
 DOCKER_RUN := docker run --rm -v "$(CURDIR)":/src:ro -w /src
