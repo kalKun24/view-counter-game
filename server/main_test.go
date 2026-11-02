@@ -22,7 +22,10 @@ func TestCacheTTL(t *testing.T) {
 		want    time.Duration
 		wantErr bool
 	}{
-		{"", time.Hour, false},
+		{"", 6 * time.Hour, false},
+		{"24h", 24 * time.Hour, false},
+		{"24h1s", 0, true},
+		{"25h", 0, true},
 		{"2s", 2 * time.Second, false},
 		{"1h", time.Hour, false},
 		{"90m", 90 * time.Minute, false},
@@ -38,6 +41,38 @@ func TestCacheTTL(t *testing.T) {
 				t.Fatalf("got %v, %v", got, err)
 			}
 		})
+	}
+}
+
+func TestCacheTTLUnsetIsSixHours(t *testing.T) {
+	got, err := cacheTTL(env(map[string]string{}))
+	if err != nil || got != 6*time.Hour {
+		t.Fatalf("got %v, %v", got, err)
+	}
+}
+
+func TestCacheTTLOverMaxErrorNamesLimitAndValue(t *testing.T) {
+	for _, v := range []string{"25h", "24h1s"} {
+		_, err := cacheTTL(env(map[string]string{"CACHE_TTL": v}))
+		if err == nil || !strings.Contains(err.Error(), "24h0m0s") || !strings.Contains(err.Error(), v) {
+			t.Errorf("%s: error = %v", v, err)
+		}
+	}
+}
+
+// The cache must hold at least the entries one day can add, for every
+// accepted TTL, so that the accepted risk of #35 (no eviction) stays true.
+func TestCacheMaxEntriesCoversDailyEntries(t *testing.T) {
+	if got := minCacheEntries(24 * time.Hour); got != 100 {
+		t.Fatalf("minCacheEntries(24h) = %d, want 100", got)
+	}
+	if got := minCacheEntries(24*time.Hour + time.Second); got != 200 {
+		t.Fatalf("minCacheEntries(24h1s) = %d, want 200", got)
+	}
+	for _, ttl := range []time.Duration{time.Second, time.Hour, defaultCacheTTL, maxCacheTTL} {
+		if cacheMaxEntries < minCacheEntries(ttl) {
+			t.Errorf("cacheMaxEntries %d < %d for ttl %s", cacheMaxEntries, minCacheEntries(ttl), ttl)
+		}
 	}
 }
 
