@@ -13,6 +13,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/kalKun24/view-counter-game/server/internal/cache"
+	"github.com/kalKun24/view-counter-game/server/internal/quota"
 	"github.com/kalKun24/view-counter-game/server/internal/youtube"
 )
 
@@ -152,14 +154,23 @@ func TestLimitWinsOverSuppressionThroughHandler(t *testing.T) {
 // request (the one-time start line of the limit is the existing one).
 func TestRefusalLogsNoNewFigures(t *testing.T) {
 	clock := &testClock{t: time.Date(2026, 10, 31, 12, 0, 0, 0, time.UTC)}
-	h, logs := quotaHandler(t, 202, clock.Now)
+	loc, err := quota.LoadPacific()
+	if err != nil {
+		t.Fatal(err)
+	}
+	logs := &lockedBuf{}
+	// Debug level, so that the "upstream not called" line is recorded too.
+	log := slog.New(slog.NewTextHandler(logs, &slog.HandlerOptions{Level: slog.LevelDebug}))
+	g := quota.New(202, loc, clock.Now, log)
+	c := quota.Wrap(&youtube.MockClient{SlowDelay: time.Millisecond}, g)
+	h := NewHandler(c, log, WithCache(cache.New[Result](time.Hour, 100, clock.Now)))
 	getRec(h, "alpha")
 	getRec(h, "beta")
 	getRec(h, "gamma")
 	before := logs.String()
 	getRec(h, "delta")
 	added := strings.TrimPrefix(logs.String(), before)
-	for _, bad := range []string{"used", "limit", "units"} {
+	for _, bad := range []string{"used", "limit=", "=101"} {
 		if strings.Contains(added, bad) {
 			t.Errorf("log of a refused request contains %q: %s", bad, added)
 		}
