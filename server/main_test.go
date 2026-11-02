@@ -22,7 +22,6 @@ func TestCacheTTL(t *testing.T) {
 		want    time.Duration
 		wantErr bool
 	}{
-		{"", 6 * time.Hour, false},
 		{"24h", 24 * time.Hour, false},
 		{"24h1s", 0, true},
 		{"25h", 0, true},
@@ -36,7 +35,7 @@ func TestCacheTTL(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.in, func(t *testing.T) {
-			got, err := cacheTTL(env(map[string]string{"CACHE_TTL": tt.in}))
+			got, err := cacheTTL(lookup(map[string]string{"CACHE_TTL": tt.in}))
 			if (err != nil) != tt.wantErr || got != tt.want {
 				t.Fatalf("got %v, %v", got, err)
 			}
@@ -45,15 +44,24 @@ func TestCacheTTL(t *testing.T) {
 }
 
 func TestCacheTTLUnsetIsSixHours(t *testing.T) {
-	got, err := cacheTTL(env(map[string]string{}))
+	got, err := cacheTTL(lookup(map[string]string{}))
 	if err != nil || got != 6*time.Hour {
+		t.Fatalf("got %v, %v", got, err)
+	}
+}
+
+// Set but empty is a startup error that names the variable (it used to be
+// the default, 6h); unset stays the default.
+func TestCacheTTLSetButEmptyIsErrorNamingVariable(t *testing.T) {
+	got, err := cacheTTL(lookup(map[string]string{"CACHE_TTL": ""}))
+	if err == nil || !strings.Contains(err.Error(), "CACHE_TTL") || got != 0 {
 		t.Fatalf("got %v, %v", got, err)
 	}
 }
 
 func TestCacheTTLOverMaxErrorNamesLimitAndValue(t *testing.T) {
 	for _, v := range []string{"25h", "24h1s"} {
-		_, err := cacheTTL(env(map[string]string{"CACHE_TTL": v}))
+		_, err := cacheTTL(lookup(map[string]string{"CACHE_TTL": v}))
 		if err == nil || !strings.Contains(err.Error(), "24h0m0s") || !strings.Contains(err.Error(), v) {
 			t.Errorf("%s: error = %v", v, err)
 		}
@@ -156,6 +164,24 @@ func TestMainStartup(t *testing.T) {
 	}
 	if !strings.Contains(s, "USE_MOCK") || !strings.Contains(s, "YOUTUBE_API_KEY") {
 		t.Errorf("output lacks variable names: %s", s)
+	}
+}
+
+// The demo case: CACHE_TTL set but empty fails to start and names the variable.
+func TestMainStartupEmptyCacheTTL(t *testing.T) {
+	if os.Getenv("RUN_REAL_MAIN") == "1" {
+		main()
+		return
+	}
+	cmd := exec.Command(os.Args[0], "-test.run=^TestMainStartupEmptyCacheTTL$")
+	cmd.Env = append(os.Environ(), "RUN_REAL_MAIN=1", "USE_MOCK=1", "YOUTUBE_API_KEY=", "CACHE_TTL=", "PORT=0")
+	out, err := cmd.CombinedOutput()
+	ee, ok := err.(*exec.ExitError)
+	if !ok || ee.ExitCode() != 1 {
+		t.Fatalf("want exit 1, got %v\n%s", err, out)
+	}
+	if !strings.Contains(string(out), "CACHE_TTL") {
+		t.Errorf("output lacks variable name: %s", out)
 	}
 }
 

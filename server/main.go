@@ -6,8 +6,9 @@
 //	USE_MOCK         optional; "1" uses a mock client (no API key, no real API calls);
 //	                 values other than "", "0", "1" are a startup error;
 //	                 setting it together with YOUTUBE_API_KEY is a startup error
-//	CACHE_TTL        optional; cache lifetime in time.ParseDuration format (default 6h), 1ns-24h;
-//	                 above 24h is a startup error (the error names the limit and the value)
+//	CACHE_TTL        optional; cache lifetime in time.ParseDuration format (default 6h when unset), 1ns-24h;
+//	                 set but empty, or above 24h, is a startup error (the error names the variable;
+//	                 above 24h it also names the limit and the value)
 //	PORT             optional; listen port (default 8080)
 //	DAILY_UNIT_LIMIT optional; own daily limit of YouTube Data API units (search.list 100,
 //	                 videos.list 1), 1-10000 (default 8000); the day changes at 00:00
@@ -75,12 +76,16 @@ func minCacheEntries(ttl time.Duration) int {
 }
 
 // cacheTTL reads CACHE_TTL (time.ParseDuration format, e.g. "2s", "1h").
-// Unset or empty means six hours (empty handling is left to #29). A value above 24h is an error. An unparsable or non-positive value is an
-// error so that a typo does not silently disable or change the cache.
-func cacheTTL(getenv func(string) string) (time.Duration, error) {
-	s := getenv("CACHE_TTL")
-	if s == "" {
+// Unset means six hours. Set but empty is an error, as is a value above 24h,
+// an unparsable value or a non-positive value, so that a typo does not
+// silently disable or change the cache.
+func cacheTTL(lookup lookupFunc) (time.Duration, error) {
+	s, ok := lookup("CACHE_TTL")
+	if !ok {
 		return defaultCacheTTL, nil
+	}
+	if s == "" {
+		return 0, errors.New("CACHE_TTL is set but empty (unset it for the default, or use e.g. 2s, 30m, 1h)")
 	}
 	d, err := time.ParseDuration(s)
 	if err != nil {
@@ -102,7 +107,7 @@ func main() {
 		log.Error("cannot start", "err", err.Error())
 		os.Exit(1)
 	}
-	ttl, err := cacheTTL(os.Getenv)
+	ttl, err := cacheTTL(os.LookupEnv)
 	if err != nil {
 		log.Error("cannot start", "err", err.Error())
 		os.Exit(1)
