@@ -38,6 +38,40 @@ var (
 	ErrSuppressed = errors.New("quota: upstream calls suppressed after quotaExceeded")
 )
 
+// ProbeWait is the wait told to a caller refused while the single trial call
+// after the suppression time is still running.
+const ProbeWait = time.Minute
+
+// WaitError is a refusal (ErrLimitReached or ErrSuppressed) that carries how
+// long the caller should wait. It carries no usage or limit figures; its text
+// is the text of the refusal. errors.Is matches the refusal it wraps.
+type WaitError struct {
+	kind error
+	// Wait is the time until calls can succeed again.
+	Wait time.Duration
+}
+
+func (e *WaitError) Error() string { return e.kind.Error() }
+func (e *WaitError) Unwrap() error { return e.kind }
+
+// RetryAfterSeconds turns a wait into whole seconds for a Retry-After header:
+// fractions are rounded up and the result is at least 1.
+func RetryAfterSeconds(d time.Duration) int {
+	secs := int((d + time.Second - 1) / time.Second)
+	if secs < 1 {
+		return 1
+	}
+	return secs
+}
+
+// untilNextPacificMidnight is the time from now to the next 00:00 in loc. The
+// midnight is built with time.Date, so a 23- or 25-hour day is handled.
+func untilNextPacificMidnight(now time.Time, loc *time.Location) time.Duration {
+	n := now.In(loc)
+	next := time.Date(n.Year(), n.Month(), n.Day()+1, 0, 0, 0, 0, loc)
+	return next.Sub(now)
+}
+
 // Guard counts units per Pacific-time day and tracks the suppression state.
 type Guard struct {
 	limit int
@@ -96,12 +130,16 @@ func (g *Guard) acquire(cost, need int) (probe bool, err error) {
 			g.log.Warn("daily unit limit reached; upstream calls stopped until the next Pacific day",
 				"used", used, "limit", g.limit, "day", day)
 		}
-		return false, ErrLimitReached
+		return false, &WaitError{kind: ErrLimitReached, Wait: untilNextPacificMidnight(now, g.loc)}
 	}
 	if g.suppressed {
 		if now.Before(g.until) || g.probing {
+			wait := ProbeWait
+			if now.Before(g.until) {
+				wait = g.until.Sub(now)
+			}
 			g.mu.Unlock()
-			return false, ErrSuppressed
+			return false, &WaitError{kind: ErrSuppressed, Wait: wait}
 		}
 		g.probing = true
 		probe = true

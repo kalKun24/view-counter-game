@@ -9,6 +9,7 @@ import {
   quotaExceeded,
   upstreamError,
 } from "../test/fakeApi";
+import { settleAfter } from "../test/settle";
 import { fetchViews } from "./views";
 
 const signal = () => new AbortController().signal;
@@ -35,7 +36,25 @@ describe("fetchViews の分類", () => {
   });
   it("503 quota_exceeded は quota", async () => {
     mockFetch(quotaExceeded());
-    expect(await fetchViews("x", signal())).toEqual({ kind: "quota" });
+    expect(await fetchViews("x", signal())).toEqual({ kind: "quota", retryAfter: null });
+  });
+  it("503 quota_exceeded の Retry-After を整数秒で読む。使えない値は null", async () => {
+    mockFetch(
+      quotaExceeded("3600"),
+      quotaExceeded("0060"),
+      quotaExceeded("0"),
+      quotaExceeded("1.5"),
+      quotaExceeded("Wed, 21 Oct 2026 07:28:00 GMT"),
+    );
+    const got = [];
+    for (let i = 0; i < 5; i++) got.push(await fetchViews("x", signal()));
+    expect(got).toEqual([
+      { kind: "quota", retryAfter: 3600 },
+      { kind: "quota", retryAfter: 60 },
+      { kind: "quota", retryAfter: null },
+      { kind: "quota", retryAfter: null },
+      { kind: "quota", retryAfter: null },
+    ]);
   });
   it("quota_exceeded 以外の 503（別 code・本文なし・JSON でない）は error", async () => {
     mockFetch(
@@ -81,7 +100,7 @@ describe("fetchViews のタイムアウト", () => {
     await vi.advanceTimersByTimeAsync(14999);
     let settled = false;
     void p.then(() => (settled = true));
-    await Promise.resolve();
+    await settleAfter();
     expect(settled).toBe(false);
     await vi.advanceTimersByTimeAsync(1);
     expect(await p).toMatchObject({ kind: "error", reason: "timeout" });

@@ -16,8 +16,15 @@ export const notFound = () => jsonResponse({ found: false });
 export const upstreamError = () =>
   jsonResponse({ error: { code: "upstream_error", message: "x" } }, 502);
 
-export const quotaExceeded = () =>
-  jsonResponse({ error: { code: "quota_exceeded", message: "x" } }, 503);
+/** 503 quota_exceeded。retryAfter が undefined ならヘッダーを付けない。extra は本文に足す余計な値。 */
+export const quotaExceeded = (retryAfter?: string, extra: Record<string, unknown> = {}) =>
+  new Response(JSON.stringify({ error: { code: "quota_exceeded", message: "x", ...extra } }), {
+    status: 503,
+    headers: {
+      "Content-Type": "application/json",
+      ...(retryAfter === undefined ? {} : { "Retry-After": retryAfter }),
+    },
+  });
 
 /** 429 too_many_requests。retryAfter が undefined ならヘッダーを付けない。 */
 export const tooMany = (retryAfter?: string, code = "too_many_requests") =>
