@@ -6,7 +6,8 @@
 //	USE_MOCK         optional; "1" uses a mock client (no API key, no real API calls);
 //	                 values other than "", "0", "1" are a startup error;
 //	                 setting it together with YOUTUBE_API_KEY is a startup error
-//	CACHE_TTL        optional; cache lifetime in time.ParseDuration format (default 1h)
+//	CACHE_TTL        optional; cache lifetime in time.ParseDuration format (default 6h), 1ns-24h;
+//	                 above 24h is a startup error (the error names the limit and the value)
 //	PORT             optional; listen port (default 8080)
 //	DAILY_UNIT_LIMIT optional; own daily limit of YouTube Data API units (search.list 100,
 //	                 videos.list 1), 1-10000 (default 8000); the day changes at 00:00
@@ -59,12 +60,22 @@ func newClient(getenv func(string) string, log *slog.Logger) (youtube.Client, er
 }
 
 const (
-	defaultCacheTTL = time.Hour
+	defaultCacheTTL = 6 * time.Hour
+	maxCacheTTL     = 24 * time.Hour
 	cacheMaxEntries = 1000
 )
 
+// minCacheEntries is the lower bound that cacheMaxEntries must keep so that
+// the entries of one day fit without eviction (#35 is accepted as a risk on
+// this premise): ceil(daily units / search cost) * ceil(ttl / 24h).
+func minCacheEntries(ttl time.Duration) int {
+	perDay := (maxDailyUnitLimit + quota.SearchCost - 1) / quota.SearchCost
+	days := int((ttl + 24*time.Hour - 1) / (24 * time.Hour))
+	return perDay * days
+}
+
 // cacheTTL reads CACHE_TTL (time.ParseDuration format, e.g. "2s", "1h").
-// Unset or empty means one hour. An unparsable or non-positive value is an
+// Unset or empty means six hours (empty handling is left to #29). A value above 24h is an error. An unparsable or non-positive value is an
 // error so that a typo does not silently disable or change the cache.
 func cacheTTL(getenv func(string) string) (time.Duration, error) {
 	s := getenv("CACHE_TTL")
@@ -77,6 +88,9 @@ func cacheTTL(getenv func(string) string) (time.Duration, error) {
 	}
 	if d <= 0 {
 		return 0, fmt.Errorf("CACHE_TTL %q must be greater than zero", s)
+	}
+	if d > maxCacheTTL {
+		return 0, fmt.Errorf("CACHE_TTL %q is above the maximum %s", s, maxCacheTTL)
 	}
 	return d, nil
 }
