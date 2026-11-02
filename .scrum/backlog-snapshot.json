@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-02T15:12:46+09:00",
+ "updated_at": "2026-11-02T16:28:14+09:00",
  "items": [
   {"id": "#1", "title": "検索ワードから最大再生回数を返す API", "status": "done", "points": 5, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/1"},
   {"id": "#2", "title": "API キーが無いときの開発用モック", "status": "done", "points": 2, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/2"},
@@ -19,9 +19,9 @@
   {"id": "#26", "title": "上流呼び出しの全体上限とクォータ切れ中の抑制", "status": "done", "points": 5, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/26"},
   {"id": "#28", "title": "検証環境と依存の固定（x/text v0.41.0、ダイジェスト、手順）", "status": "done", "points": 2, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/28"},
   {"id": "#25", "title": "連打の制限（429）の表示（画面）", "status": "done", "points": 3, "ui": "yes", "url": "https://github.com/kalKun24/view-counter-game/issues/25"},
-  {"id": "#32", "title": "上限・抑制中の待ち時間を伝える（Retry-After と画面の文言）", "status": "sprint", "points": 5, "ui": "yes", "url": "https://github.com/kalKun24/view-counter-game/issues/32"},
-  {"id": "#36", "title": "キャッシュの期限を延ばし、人気のワードの取り直しで上限を使い切らないようにする", "status": "sprint", "points": 2, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/36"},
-  {"id": "#29", "title": "設定の扱いとテストの確かさを揃える", "status": "sprint", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/29"},
+  {"id": "#32", "title": "上限・抑制中の待ち時間を伝える（Retry-After と画面の文言）", "status": "done", "points": 5, "ui": "yes", "url": "https://github.com/kalKun24/view-counter-game/issues/32"},
+  {"id": "#36", "title": "キャッシュの期限を延ばし、人気のワードの取り直しで上限を使い切らないようにする", "status": "done", "points": 2, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/36"},
+  {"id": "#29", "title": "設定の扱いとテストの確かさを揃える", "status": "done", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/29"},
   {"id": "#31", "title": "web のテストを負荷のある環境でも安定させる", "status": "ready", "points": 5, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/31"},
   {"id": "#27", "title": "回数制限の堅牢化（走査・ログ・プロキシの前提）", "status": "ready", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/27"},
   {"id": "#33", "title": "検索の予約に videos.list の分を含める", "status": "ready", "points": 3, "ui": "no", "url": "https://github.com/kalKun24/view-counter-game/issues/33"},

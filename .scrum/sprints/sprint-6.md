@@ -1,5 +1,5 @@
 # Sprint 6
-- phase: review
+- phase: retrospective
 - goal: 本物の API を呼ばずに、PO が次の2点を確かめられる。上限に達したとき、画面とヘッダの両方で「あと何時間で遊べるか」が分かる。キャッシュの期限が既定で6時間になり、24時間を超える設定や空の設定では起動しない。
 - started: 2026-11-02T15:12:46+09:00
 - base_branch: main
@@ -7,9 +7,9 @@
 ## 対象 PBI
 | PBI | points | ui | 担当構成 | 状態 | 差し戻し | ブランチ | 作業ディレクトリ |
 |---|---|---|---|---|---|---|---|
-| #32 | 5 | yes | ui-designer → golang-pro → react-specialist | approved | 0 | scrum/32 | .claude/worktrees/agent-a2f8948c976a5cc16 |
-| #36 | 2 | no | golang-pro | approved | 0 | scrum/36 | .claude/worktrees/agent-aec044a23e65980f0 |
-| #29 | 3 | no | golang-pro → react-specialist | approved | 0 | scrum/29（scrum/36 から） | .claude/worktrees/agent-ac10522e97e65ff59 |
+| #32 | 5 | yes | ui-designer → golang-pro → react-specialist | accepted | 0 | scrum/32 | .claude/worktrees/agent-a2f8948c976a5cc16 |
+| #36 | 2 | no | golang-pro | accepted | 0 | scrum/36 | .claude/worktrees/agent-aec044a23e65980f0 |
+| #29 | 3 | no | golang-pro → react-specialist | accepted | 0 | scrum/29（scrum/36 から） | .claude/worktrees/agent-ac10522e97e65ff59 |
 
 ## デモ台本
 | # | PO の操作 | 期待する結果 | PBI |
@@ -75,3 +75,12 @@
 - 統合（react-specialist）：`quota.test.tsx` の競合を解消した（「取得中にやめる」は #29 の版、#32 の `act` と 50ms の待ちは外した）。マージコミット 9b1e88d。統合ブランチで `npm test` 12ファイル 211件 pass（#29 は `it` を増やしていないので、#32 の 211件と同じ）、`npm run build` 成功、`make test-race` ok、`make vuln` 0件。項目7：unmount 時の abort を外すと「取得中にやめる」が fail する。`ctrl.signal.aborted` の判定だけを外しても pass する（`cancelled` の判定で止まる二重の防御のため）。
 - デモ：`.scrum/demos/sprint-6/`（README.md、demo.sh、scenes.json、browser.mjs）。1回目。統合ブランチ `scrum/sprint-6`、作業ディレクトリ `.claude/worktrees/sprint-6`。
 - リハーサル（1回目）：4場面すべて一致、確認 NG 0件。場面1の `Retry-After` は `date` の値と差 0 秒。場面2の画面は「約1時間」（3600）と「約60分」（3500 台）の両方を確かめ、スクリーンショット2枚を目視した。場面4は20回とも 116 件 pass。台本との違い：場面2の画面は、`curl` に使ったサーバとは別の新しいサーバで確かめる（同じサーバでは最初から「約60分」になるため）。phase を review にした。
+- レビュー：PO がデモを受け入れた。PR #37 でマージした（マージ後の main は 275f2cc）。#32、#36、#29 は PR の Closes で閉じた。
+- マージ後の main のテスト：`make test-race` は6パッケージ ok（テスト関数 115、前回 94 から +21）。`make vuln` は「No vulnerabilities found.」のみ。web は `npm test` 12ファイル 211件 pass（前回 165 から +46）、`npm run build` 成功。
+- 後片付け：PBI の作業ディレクトリ3つと統合の作業ディレクトリを消し、ブランチ7本（scrum/32・36・29・sprint-6 と worktree-agent-*）を消した。ロックは残っていなかった。
+- PO に示した事項（UI 仕様の3点：3599秒が「約60分」、日付形式の `Retry-After` を使わない、24時間以上を時間で出す）について、PO は個別の変更を求めなかった。
+
+## デモの判定
+| 回 | 日時 | 判定 | PO の指摘 | 原因の PBI | 対応 |
+|---|---|---|---|---|---|
+| 1 | 2026-11-02T16:28:14+09:00 | 受け入れ | — | — | マージした |
