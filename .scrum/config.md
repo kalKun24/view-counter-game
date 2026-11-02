@@ -2,7 +2,7 @@
 - backend: github
 - capacity: 10
 - base_branch: main
-- sprint: 5
+- sprint: 6
 - github.repo: kalKun24/view-counter-game
 
 ## Definition of Done
