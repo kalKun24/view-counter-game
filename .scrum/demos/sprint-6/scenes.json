@@ -1,0 +1,47 @@
+{
+  "viewport": [390, 844],
+  "scenes": [
+    {
+      "id": 2,
+      "title": "クォータ切れの画面に待ち時間が出る（#32）。1回目は quota（Retry-After は 3600 で固定）、2回目は抑制中の別のワード（3600 未満）",
+      "steps": [
+        {"goto": "/"},
+        {"click": "[data-testid=mode-countdown]"},
+        {"wait": "[data-testid=setup-start]"},
+        {"click": "[data-testid=setup-start]"},
+        {"wait": "[data-testid=search-input]"},
+        {"expect_text": ["[data-testid=counter-turns]", "残り5ターン"]},
+        {"fill": ["[data-testid=search-input]", "quota"]},
+        {"click": "[data-testid=search-submit]"},
+        {"wait": "[data-testid=quota-notice]"},
+        {"expect_text": ["[data-testid=quota-title]", "いまは遊べません"]},
+        {"expect_text": ["[data-testid=quota-notice][data-retry-after=\"3600\"] [data-testid=quota-message]", "あと約1時間で、もう一度遊べます。"]},
+        {"expect_text": ["[data-testid=quota-notice]", "ゲームは進んでいません。ターンは減っていません。"]},
+        {"expect_no_text": ["[data-testid=quota-notice]", "明日"]},
+        {"expect_count": ["[data-testid=retry-button]", 0]},
+        {"expect_count": ["[data-testid=search-input]", 0]},
+        {"expect_count": ["[data-testid=quota-home]", 1]},
+        {"sleep": 300},
+        {"screenshot": "quota-first-3600"},
+        {"sleep": 1200},
+        {"click": "[data-testid=quota-home]"},
+        {"wait": "[data-testid=mode-countdown]"},
+        {"click": "[data-testid=mode-countdown]"},
+        {"wait": "[data-testid=setup-start]"},
+        {"click": "[data-testid=setup-start]"},
+        {"wait": "[data-testid=search-input]"},
+        {"expect_text": ["[data-testid=counter-turns]", "残り5ターン"]},
+        {"fill": ["[data-testid=search-input]", "delta"]},
+        {"click": "[data-testid=search-submit]"},
+        {"wait": "[data-testid=quota-notice]"},
+        {"expect_text": ["[data-testid=quota-title]", "いまは遊べません"]},
+        {"expect_count": ["[data-testid=quota-notice][data-retry-after]:not([data-retry-after=\"3600\"])", 1]},
+        {"expect_text": ["[data-testid=quota-notice][data-retry-after^=\"35\"] [data-testid=quota-message]", "あと約60分で、もう一度遊べます。"]},
+        {"expect_text": ["[data-testid=quota-notice]", "ゲームは進んでいません。ターンは減っていません。"]},
+        {"expect_count": ["[data-testid=retry-button]", 0]},
+        {"sleep": 300},
+        {"screenshot": "quota-second-suppressed"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "failures": 0,
+  "scenes": [
+    {
+      "id": 2,
+      "checks": [
+        {
+          "selector": "[data-testid=counter-turns]",
+          "op": "expect_text",
+          "want": "残り5ターン",
+          "ok": true,
+          "actual": "残り5ターン"
+        },
+        {
+          "selector": "[data-testid=quota-title]",
+          "op": "expect_text",
+          "want": "いまは遊べません",
+          "ok": true,
+          "actual": "いまは遊べません"
+        },
+        {
+          "selector": "[data-testid=quota-notice][data-retry-after=\"3600\"] [data-testid=quota-message]",
+          "op": "expect_text",
+          "want": "あと約1時間で、もう一度遊べます。",
+          "ok": true,
+          "actual": "サーバーの利用上限に達しました。あと約1時間で、もう一度遊べます。"
+        },
+        {
+          "selector": "[data-testid=quota-notice]",
+          "op": "expect_text",
+          "want": "ゲームは進んでいません。ターンは減っていません。",
+          "ok": true,
+          "actual": "いまは遊べません サーバーの利用上限に達しました。あと約1時間で、もう一度遊べます。 ゲームは進んでいません。ターンは減っていません。 ホームへ戻る"
+        },
+        {
+          "selector": "[data-testid=quota-notice]",
+          "op": "expect_no_text",
+          "want": "明日",
+          "ok": true,
+          "actual": "いまは遊べません サーバーの利用上限に達しました。あと約1時間で、もう一度遊べます。 ゲームは進んでいません。ターンは減っていません。 ホームへ戻る"
+        },
+        {
+          "selector": "[data-testid=retry-button]",
+          "op": "expect_count",
+          "want": 0,
+          "ok": true,
+          "actual": 0
+        },
+        {
+          "selector": "[data-testid=search-input]",
+          "op": "expect_count",
+          "want": 0,
+          "ok": true,
+          "actual": 0
+        },
+        {
+          "selector": "[data-testid=quota-home]",
+          "op": "expect_count",
+          "want": 1,
+          "ok": true,
+          "actual": 1
+        },
+        {
+          "selector": "[data-testid=counter-turns]",
+          "op": "expect_text",
+          "want": "残り5ターン",
+          "ok": true,
+          "actual": "残り5ターン"
+        },
+        {
+          "selector": "[data-testid=quota-title]",
+          "op": "expect_text",
+          "want": "いまは遊べません",
+          "ok": true,
+          "actual": "いまは遊べません"
+        },
+        {
+          "selector": "[data-testid=quota-notice][data-retry-after]:not([data-retry-after=\"3600\"])",
+          "op": "expect_count",
+          "want": 1,
+          "ok": true,
+          "actual": 1
+        },
+        {
+          "selector": "[data-testid=quota-notice][data-retry-after^=\"35\"] [data-testid=quota-message]",
+          "op": "expect_text",
+          "want": "あと約60分で、もう一度遊べます。",
+          "ok": true,
+          "actual": "サーバーの利用上限に達しました。あと約60分で、もう一度遊べます。"
+        },
+        {
+          "selector": "[data-testid=quota-notice]",
+          "op": "expect_text",
+          "want": "ゲームは進んでいません。ターンは減っていません。",
+          "ok": true,
+          "actual": "いまは遊べません サーバーの利用上限に達しました。あと約60分で、もう一度遊べます。 ゲームは進んでいません。ターンは減っていません。 ホームへ戻る"
+        },
+        {
+          "selector": "[data-testid=retry-button]",
+          "op": "expect_count",
+          "want": 0,
+          "ok": true,
+          "actual": 0
+        }
+      ],
+      "screenshots": [
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-6/shots/20261102T155938/scene-2-quota-first-3600.png",
+        "/home/kal24hi/Projects/view-counter-game/.scrum/demos/sprint-6/shots/20261102T155938/scene-2-quota-second-suppressed.png"
+      ],
+      "error": null
+    }
+  ],
+  "console_errors": []
+}
