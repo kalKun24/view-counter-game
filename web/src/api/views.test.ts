@@ -9,6 +9,7 @@ import {
   quotaExceeded,
   upstreamError,
 } from "../test/fakeApi";
+import { settleAfter } from "../test/settle";
 import { fetchViews } from "./views";
 
 const signal = () => new AbortController().signal;
@@ -99,7 +100,7 @@ describe("fetchViews のタイムアウト", () => {
     await vi.advanceTimersByTimeAsync(14999);
     let settled = false;
     void p.then(() => (settled = true));
-    await Promise.resolve();
+    await settleAfter();
     expect(settled).toBe(false);
     await vi.advanceTimersByTimeAsync(1);
     expect(await p).toMatchObject({ kind: "error", reason: "timeout" });

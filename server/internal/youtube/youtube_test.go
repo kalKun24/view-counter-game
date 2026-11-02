@@ -107,37 +107,75 @@ func TestNilHTTPClientHasTimeout(t *testing.T) {
 }
 
 func TestDefaultHTTPTimeoutIsTenSeconds(t *testing.T) {
-	if DefaultHTTPTimeout != 10*time.Second || defaultHTTPTimeout != DefaultHTTPTimeout {
-		t.Fatalf("%v %v", DefaultHTTPTimeout, defaultHTTPTimeout)
+	if DefaultHTTPTimeout != 10*time.Second {
+		t.Fatalf("%v", DefaultHTTPTimeout)
+	}
+	// The public constructor applies the 10 second value to a Timeout 0 client.
+	c := NewHTTPClient(key, "http://example.invalid", &http.Client{})
+	if c.http.Timeout != 10*time.Second {
+		t.Fatalf("timeout = %v", c.http.Timeout)
 	}
 }
 
-// TestNilHTTPClientTimeoutOnHangingServer shortens the default timeout so the
-// test does not wait the real 10 seconds.
-func TestNilHTTPClientTimeoutOnHangingServer(t *testing.T) {
-	old := defaultHTTPTimeout
-	defaultHTTPTimeout = 50 * time.Millisecond
-	t.Cleanup(func() { defaultHTTPTimeout = old })
+func TestTimeoutZeroClientIsCopiedNotModified(t *testing.T) {
+	given := &http.Client{}
+	c := NewHTTPClient(key, "http://example.invalid", given)
+	if given.Timeout != 0 {
+		t.Fatalf("given client was modified: %v", given.Timeout)
+	}
+	if c.http == given || c.http.Timeout != DefaultHTTPTimeout {
+		t.Fatalf("not a copy with the default timeout: %+v", c.http)
+	}
+}
 
+func TestClientWithTimeoutIsUsedAsIs(t *testing.T) {
+	given := &http.Client{Timeout: 3 * time.Second}
+	c := NewHTTPClient(key, "http://example.invalid", given)
+	if c.http != given || given.Timeout != 3*time.Second {
+		t.Fatalf("%+v", c.http)
+	}
+}
+
+// hangingServer never answers until the test ends.
+func hangingServer(t *testing.T) string {
+	t.Helper()
 	release := make(chan struct{})
 	ts := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) { <-release }))
 	t.Cleanup(ts.Close)
 	t.Cleanup(func() { close(release) }) // runs before ts.Close
+	return ts.URL
+}
 
-	c := NewHTTPClient(key, ts.URL, nil)
-	start := time.Now()
-	_, err := c.SearchVideoIDs(context.Background(), "q")
-	if err == nil {
-		t.Fatal("expected a timeout error")
-	}
-	if !IsTimeout(err) || !IsUpstream(err) {
-		t.Fatalf("not an upstream timeout: %v", err)
-	}
-	if strings.Contains(err.Error(), key) {
-		t.Fatalf("key leaked: %v", err)
-	}
-	if d := time.Since(start); d > 5*time.Second {
-		t.Fatalf("took %v", d)
+// The timeout is injected through the internal constructor so that the test
+// does not wait the real 10 seconds. Both a nil client and a Timeout 0 client
+// are cut off, and the given client stays unchanged.
+func TestHangingUpstreamIsCutOffByTimeout(t *testing.T) {
+	for name, given := range map[string]*http.Client{"nil": nil, "timeout0": {}} {
+		t.Run(name, func(t *testing.T) {
+			url := hangingServer(t)
+			c := newHTTPClient(key, url, given, 50*time.Millisecond)
+			// The context deadline only keeps the test from hanging when the
+			// client timeout is missing; it is far longer than the 50ms timeout.
+			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+			defer cancel()
+			start := time.Now()
+			_, err := c.SearchVideoIDs(ctx, "q")
+			if err == nil {
+				t.Fatal("expected a timeout error")
+			}
+			if !IsTimeout(err) || !IsUpstream(err) {
+				t.Fatalf("not an upstream timeout: %v", err)
+			}
+			if strings.Contains(err.Error(), key) {
+				t.Fatalf("key leaked: %v", err)
+			}
+			if d := time.Since(start); d > 2*time.Second {
+				t.Fatalf("took %v", d)
+			}
+			if given != nil && given.Timeout != 0 {
+				t.Fatalf("given client was modified: %v", given.Timeout)
+			}
+		})
 	}
 }
 

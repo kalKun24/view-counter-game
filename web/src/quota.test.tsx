@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import App from "./App";
@@ -12,6 +12,7 @@ import {
   requestedQueries,
   tooMany,
 } from "./test/fakeApi";
+import { settleAfter } from "./test/settle";
 
 const tid = (id: string) => screen.getByTestId(id);
 const queryTid = (id: string) => screen.queryByTestId(id);
@@ -115,20 +116,19 @@ describe("クォータ切れ（PBI 11・カウントダウン）", () => {
   });
 
   it("取得中に「やめる」を押したら、届いたクォータ切れの応答は表示しない", async () => {
-    vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     const d = deferred();
     mockFetch(d.promise);
     const user = setup();
     await startSolo(user, "countdown");
     await search(user, "slow");
     await user.click(tid("play-quit"));
-    d.resolve(quotaExceeded("3600"));
-    // 応答が処理されるのに十分な実時間を置く（1回の microtask の待ちでは足りない）
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 50));
-    });
+    d.resolve(quotaExceeded());
+    await settleAfter(d.promise);
     expect(tid("home-title")).toBeInTheDocument();
     expect(queryTid("quota-notice")).toBeNull();
+    // 中止した応答は処理されない（ログにも出ない）
+    expect(warn).not.toHaveBeenCalled();
   });
 });
 
