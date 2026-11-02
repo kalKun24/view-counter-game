@@ -54,7 +54,7 @@ export function SearchForm({ isUsed, onResult, onHome }: Props) {
     retry();
   };
 
-  if (state.kind === "quota") return <QuotaNotice onHome={onHome} />;
+  if (state.kind === "quota") return <QuotaNotice retryAfter={state.retryAfter} onHome={onHome} />;
 
   return (
     <section className="panel">
