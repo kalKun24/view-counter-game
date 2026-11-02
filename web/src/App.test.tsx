@@ -13,6 +13,7 @@ import {
   requestedQueries,
   upstreamError,
 } from "./test/fakeApi";
+import { settleAfter } from "./test/settle";
 
 const MINUS = String.fromCharCode(0x2212);
 const tid = (id: string) => screen.getByTestId(id);
@@ -346,7 +347,7 @@ describe("取得中（受け入れ基準 8）", () => {
     await user.click(tid("play-quit"));
     expect(tid("home-title")).toBeInTheDocument();
     d.resolve(found(1_000_000));
-    await Promise.resolve();
+    await settleAfter(d.promise);
     expect(tid("home-title")).toBeInTheDocument();
     expect(f.mock.calls[0]![1]!.signal!.aborted).toBe(true);
     // 中止はエラー扱いにしない（ログにも出さない）

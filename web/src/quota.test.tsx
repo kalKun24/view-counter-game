@@ -11,6 +11,7 @@ import {
   quotaExceeded,
   requestedQueries,
 } from "./test/fakeApi";
+import { settleAfter } from "./test/settle";
 
 const tid = (id: string) => screen.getByTestId(id);
 const queryTid = (id: string) => screen.queryByTestId(id);
@@ -114,7 +115,7 @@ describe("クォータ切れ（PBI 11・カウントダウン）", () => {
   });
 
   it("取得中に「やめる」を押したら、届いたクォータ切れの応答は表示しない", async () => {
-    vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     const d = deferred();
     mockFetch(d.promise);
     const user = setup();
@@ -122,9 +123,11 @@ describe("クォータ切れ（PBI 11・カウントダウン）", () => {
     await search(user, "slow");
     await user.click(tid("play-quit"));
     d.resolve(quotaExceeded());
-    await Promise.resolve();
+    await settleAfter(d.promise);
     expect(tid("home-title")).toBeInTheDocument();
     expect(queryTid("quota-notice")).toBeNull();
+    // 中止した応答は処理されない（ログにも出ない）
+    expect(warn).not.toHaveBeenCalled();
   });
 });
 
