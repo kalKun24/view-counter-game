@@ -5,6 +5,8 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/kalKun24/view-counter-game/server/internal/quota"
 	"github.com/kalKun24/view-counter-game/server/internal/youtube"
@@ -12,6 +14,12 @@ import (
 
 // statusClientClosedRequest is the (nginx) status for a caller that gave up.
 const statusClientClosedRequest = 499
+
+// setRetryAfter sets Retry-After to the wait in whole seconds (rounded up, at
+// least 1). It must be called before the body is written.
+func setRetryAfter(w http.ResponseWriter, wait time.Duration) {
+	w.Header().Set("Retry-After", strconv.Itoa(quota.RetryAfterSeconds(wait)))
+}
 
 // writeLookupError tells apart, in both the log and the status: quota
 // exhaustion (503 quota_exceeded), timeouts (504 timeout), a canceled caller
@@ -23,9 +31,14 @@ func writeLookupError(w http.ResponseWriter, log *slog.Logger, err error) {
 		// Upstream was not called. The start of the stop is logged once by the
 		// guard, so a request here is only a debug line (no flood in the log).
 		log.Debug("upstream not called", "reason", err.Error())
+		var we *quota.WaitError
+		if errors.As(err, &we) {
+			setRetryAfter(w, we.Wait)
+		}
 		writeError(w, http.StatusServiceUnavailable, "quota_exceeded", "YouTube API の利用上限に達しました。しばらくしてからもう一度お試しください。")
 	case youtube.IsQuotaExceeded(err):
 		log.Error("youtube quota exceeded", "err", err.Error())
+		setRetryAfter(w, quota.SuppressFor)
 		writeError(w, http.StatusServiceUnavailable, "quota_exceeded", "YouTube API の利用上限に達しました。しばらくしてからもう一度お試しください。")
 	case errors.Is(err, context.Canceled):
 		log.Warn("request canceled by caller")
